@@ -1,6 +1,18 @@
 ﻿@using System.Globalization;
 @inject IStringLocalizer<Syriana_Web.Components.Layout.MainLayout> L
 @inherits LayoutComponentBase
+
+<PageTitle>
+    @(IsArabic ? "سيريانا سوبر ماركت في لويتكرش" : "Syriana Supermarkt In Leutkirch")
+</PageTitle>
+<HeadContent>
+    <meta name="author" content="@(IsArabic ? "نضال وحود" : "Nedal Wahhoud")">
+    <meta name="description" content="@(IsArabic ? " اكتشف أفضل المنتجات العربية والسورية عبر الإنترنت. مواد غذائية، توابل، حلويات ومشروبات من سوريا والعالم العربي مع توصيل سريع."
+    : "Entdecken Sie die besten arabischen und syrischen Produkte online. Lebensmittel, Gewürze, Süßigkeiten und Getränke aus Syrien und der arabischen Welt mit schneller Lieferung.")">
+    <meta name="keywords" content="@(IsArabic ? "منتجات عربية, منتجات سورية, سوريا, توابل, حلويات, متجر إلكتروني, تسوق أونلاين"
+    :"arabische Produkte, syrische Lebensmittel, Syrien, Gewürze, Süßigkeiten, Online-Shop, Lebensmittel online")">
+</HeadContent>
+
 @if (!HeaderHidden)
 {
     <Header />
@@ -62,7 +74,8 @@
     private bool hasAccepted;
     private bool shouldShow = false;
     private ErrorBoundary? errorBoundary;
-
+    private bool IsArabic =>
+        CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "ar";
     protected override async Task OnInitializedAsync()
     {
         // Check user authentication status and update the authentication state accordingly
