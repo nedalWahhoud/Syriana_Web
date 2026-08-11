@@ -1,0 +1,51 @@
+﻿@using System.Net.Http
+@using System.Net.Http.Json
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.AspNetCore.Components.Web.Virtualization
+@using Microsoft.AspNetCore.Components.WebAssembly.Http
+@using Microsoft.AspNetCore.Components.Authorization;
+@using Microsoft.JSInterop
+@using Syriana_Web
+@* Folder *@
+@using Syriana_Web.Components
+@using Syriana_Web.Components.CategoriesF
+@using Syriana_Web.Components.Layout
+@using Syriana_Web.Components.Login
+@using Syriana_Web.Components.ImagesF
+@using Syriana_Web.Components.Cart
+@using Syriana_Web.Components.SearchF
+@using Syriana_Web.Components.CookieF
+@using Syriana_Web.Components.FavoriteF
+@using Syriana_Web.Components.ProductsF
+@using Syriana_Web.Components.AddressesF
+@using Syriana_Web.Components.OrderF
+@using Syriana_Web.Components.DiscountF
+@using Syriana_Web.Components.TransactionsCustomersF
+@using Syriana_Web.Components.CustomersF
+@using Syriana_Web.Components.DebtF
+@using Syriana_Web.Components.EmailF
+@using Syriana_Web.Components.ProductGroupF
+@* ----- *@
+@inject IJSRuntime js
+@inject NavigationManager navigationManager
+@inject AuthService authService
+@inject AuthenticationStateProvider AuthStateProvider
+@inject CategoryService categoryService
+@inject CarouselImagesService carouselImagesService
+@inject CookieService cookieService
+@inject CartService cartService
+@inject ProductImagesService productImagesService
+@inject SearchService searchService
+@inject FavoriteService favoriteService
+@inject ProductService productService
+@inject AddressService addressService
+@inject OrderService orderService
+@inject DiscountService discountService
+@inject CustomersService customersService
+@inject TransactionsCustomersService transactionsCustomersService
+@inject DebtService debtService
+@inject EmailService emailService
+@inject ProductGroupService productGroupService
+@inherits ProjectComponentBase

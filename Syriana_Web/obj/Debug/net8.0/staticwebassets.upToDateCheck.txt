@@ -1,0 +1,26 @@
+wwwroot\css\app.css
+wwwroot\css\bootstrap\bootstrap.min.css
+wwwroot\css\bootstrap\bootstrap.min.css.map
+wwwroot\index.html
+wwwroot\JS\script.js
+wwwroot\ProjectImages\cart.svg
+wwwroot\ProjectImages\DPImage.png
+wwwroot\ProjectImages\e32a2029-3dad-427c-9d98-46ade63a13e3-Photoroom.png
+wwwroot\ProjectImages\Email.png
+wwwroot\ProjectImages\Facebook.png
+wwwroot\ProjectImages\FeatureSection\FeatureSectionImg.png
+wwwroot\ProjectImages\FeatureSection\FeatureSectionImg1.png
+wwwroot\ProjectImages\FeatureSection\FeatureSectionImg2.png
+wwwroot\ProjectImages\FeatureSection\FeatureSectionImg3.png
+wwwroot\ProjectImages\FeatureSection\FeatureSectionImg4.png
+wwwroot\ProjectImages\FeatureSection\FeatureSectionImg5.png
+wwwroot\ProjectImages\FeatureSection\FeatureSectionImg6.png
+wwwroot\ProjectImages\FeatureSection\FeatureSectionImg7.png
+wwwroot\ProjectImages\HeroSecti2on.png
+wwwroot\ProjectImages\HeroSection.png
+wwwroot\ProjectImages\Instagram.png
+wwwroot\ProjectImages\Location.png
+wwwroot\ProjectImages\Syriana Supermarkt Logo mit Text.png
+wwwroot\ProjectImages\Syriana Supermarkt Logo.png
+wwwroot\ProjectImages\SyrianaSupermarktLogoOhneText.png
+wwwroot\ProjectImages\Whatsapp.png

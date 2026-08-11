@@ -1,0 +1,167 @@
+﻿.footer {
+    background-color: var(--hederBackgroundColoe);
+    color: white;
+    width: 100%;
+    padding: 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    text-align: left;
+    gap: 10px;
+    margin-top: auto;
+}
+
+    .footer > div {
+        flex: 1;
+    }
+
+html[dir="rtl"] .footer {
+    direction: ltr;
+    text-align: left;
+}
+
+.logoDiv {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+    text-align: left;
+    padding: 10px;
+}
+/* alle Header und arabsiche texts in Arabisch mode zu rechtseite scheben */
+html[dir="rtl"] .footer div h3,
+html[dir="rtl"] .footer .linksDiv a{
+    align-self: flex-end;
+    text-align: right;
+}
+/* icons in arbaische mode in rechte seite bleiben */
+html[dir="rtl"] .footer .icons {
+    margin-left: auto; 
+}
+
+.contactDiv {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+    text-align: left;
+    padding: 10px;
+}
+
+    .contactDiv h3 {
+        font-weight: bold;
+    }
+
+
+.contactDiv p {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    font-size: 20px;
+    color: #ffffff;
+    cursor: pointer;
+}
+
+        .contactDiv p span {
+            color: #ffffff;
+            cursor: pointer;
+        }
+
+            .contactDiv p span:hover {
+                color: #808080;
+            }
+.socialMedia{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    padding:10px;
+    gap:10px;
+}
+    .socialMedia h3{
+        font-weight:bold;
+    }
+    .icons {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+    .icons a i{
+        font-size:30px;
+    }
+.linksDiv {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    padding: 10px;
+    gap: 10px;
+}
+
+    .linksDiv h3 {
+        font-weight: bold;
+    }
+
+    .linksDiv a {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+        font-size: 20px;
+        color: #ffffff;
+        text-decoration: none;
+    }
+
+        .linksDiv a:hover {
+            color: #808080;
+        }
+
+.mapDiv {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    padding: 10px;
+    gap: 10px;
+    width: 100%;
+}
+
+    .mapDiv h3 {
+        font-weight: bold;
+    }
+
+    .mapDiv a {
+        width: 100%;
+    }
+
+.iframe {
+    width: 100%;
+    height: clamp(150px, 40vw, 220px);
+}
+
+@media (max-width: 768px) {
+    .footer {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 15px;
+    }
+
+        .footer > div {
+            width: 100%;
+            padding: 5px;
+        }
+
+    .icons {
+        flex-direction: row;
+        gap: 15px;
+    }
+    h3{
+        font-size:22px;
+    }
+    .contactDiv p {
+        font-size: 18px;
+    }
+    .linksDiv a {
+        font-size: 18px;
+    }
+
+}
+

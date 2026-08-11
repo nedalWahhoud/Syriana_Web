@@ -1,0 +1,14 @@
+﻿<div class="div">
+    <img src="ProjectImages/SyrianaSupermarktLogoOhneText.png" 
+    style="cursor:pointer;" alt="Syriana Supermarkt Icon" @onclick="OnProjectName" />
+  <div style="display:flex; flex-direction:column; text-align:center; gap:10px;">
+    <h2 @onclick="OnProjectName">@ProjectInfo.Name</h2>
+    <h2 @onclick="OnProjectName">@ProjectInfo.NameArabic</h2>
+  </div>
+</div>
+@code {
+    private void OnProjectName()
+    {
+        navigationManager.NavigateTo("/");
+    }
+}

@@ -1,0 +1,230 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="DescriptionCardButton" xml:space="preserve">
+    <value>Bakery Products</value>
+  </data>
+  <data name="DescriptionCardTitle" xml:space="preserve">
+    <value>Fresh Arabic flatbreads daily</value>
+  </data>
+  <data name="DescriptionCardText" xml:space="preserve">
+    <value>Enjoy the authentic taste of traditional flatbread—baked fresh for you every day. For the health-conscious, we also offer our healthy, fiber-rich whole-grain flatbread.</value>
+  </data>
+  <data name="DescriptionCardTitle1" xml:space="preserve">
+    <value>Fresh Halal-Meat</value>
+  </data>
+  <data name="DescriptionCardText1" xml:space="preserve">
+    <value>Top quality for your enjoyment:&lt;br/&gt;
+&lt;ul&gt;
+&lt;li&gt;Fresh lamb&lt;/li&gt;
+&lt;li&gt;Fresh veal and beef&lt;/li&gt;
+&lt;li&gt;Fresh chicken&lt;/li&gt;
+&lt;li&gt;Poultry and lamb liver&lt;/li&gt;
+&lt;li&gt;100% Halal, fresh daily and prepared according to the highest hygiene standards.&lt;/li&gt;
+&lt;/ul&gt;</value>
+  </data>
+  <data name="DescriptionCardButton1" xml:space="preserve">
+    <value>To butcher shop</value>
+  </data>
+  <data name="DescriptionCardTitle2" xml:space="preserve">
+    <value>Reliable and regular delivery service</value>
+  </data>
+  <data name="DescriptionCardText2" xml:space="preserve">
+    <value>We come to you! Take advantage of our regular delivery service. &lt;br/&gt;
+&lt;ul&gt;
+&lt;li&gt;Punctual delivery on fixed days every week.&lt;/li&gt;
+&lt;li&gt;We deliver our products—including fresh meat and all your daily essentials—directly to your doorstep.&lt;/li&gt;
+&lt;li&gt;Reliable, convenient, and always fresh—your groceries from Syriana, delivered right to you.&lt;/li&gt;
+&lt;li&gt;Find out the exact delivery times for your region.&lt;/li&gt;
+&lt;/ul&gt;</value>
+  </data>
+  <data name="DescriptionCardButton2" xml:space="preserve">
+    <value>View Delivery Schedule</value>
+  </data>
+  <data name="DescriptionCardTitle3" xml:space="preserve">
+    <value>Our Product Range</value>
+  </data>
+  <data name="DescriptionCardText3" xml:space="preserve">
+    <value>From local specialties to European market favorites – we have it all.
+&lt;ul&gt;
+&lt;li&gt;Over 500 carefully selected items for your daily needs.&lt;/li&gt;
+&lt;li&gt;Top quality and attractive offers, all in one place.&lt;/li&gt;
+&lt;li&gt;Discover our product range now and enjoy a unique shopping experience.&lt;/li&gt;
+&lt;/ul&gt;</value>
+  </data>
+  <data name="DescriptionCardButton3" xml:space="preserve">
+    <value>Go to Shop</value>
+  </data>
+  <data name="DescriptionCardTitle4" xml:space="preserve">
+    <value>Enjoy Arabic drinks.</value>
+  </data>
+  <data name="DescriptionCardText4" xml:space="preserve">
+    <value>Pure Refreshment for Every Taste!
+&lt;ul&gt;
+&lt;li&gt;Experience pure refreshment with our Arabic beverages.&lt;/li&gt;
+&lt;li&gt;A wide selection of soft drinks and natural juices.&lt;/li&gt;
+&lt;li&gt;Enjoy our chilled drinks.&lt;/li&gt;
+&lt;/ul&gt;</value>
+  </data>
+  <data name="DescriptionCardButton4" xml:space="preserve">
+    <value>To select</value>
+  </data>
+  <data name="DescriptionCardTitle5" xml:space="preserve">
+    <value>Fresh Frozen Foods for Quick Meals</value>
+  </data>
+  <data name="DescriptionCardText5" xml:space="preserve">
+    <value>Enjoy premium frozen products with a fresh taste and minimal effort.
+&lt;ul&gt;
+&lt;li&gt;Garden-fresh vegetables that retain their vitamins&lt;/li&gt;
+&lt;li&gt;Traditional specialties such as Kibbeh, Sambusa, and Falafel&lt;/li&gt;
+&lt;li&gt;Find everything you need for a delicious meal in record time&lt;/li&gt;
+&lt;/ul&gt;</value>
+  </data>
+  <data name="DescriptionCardTitle6" xml:space="preserve">
+    <value>Arabian Roasted Goods &amp; Snacks</value>
+  </data>
+  <data name="DescriptionCardText6" xml:space="preserve">
+    <value>The perfect snack treat for your cozy evenings!
+&lt;ul&gt;
+&lt;li&gt;Freshly roasted seeds and nuts (sunflower seeds, pumpkin seeds, Chinese mix, nuts, and much more)&lt;/li&gt;
+&lt;li&gt;A wide variety of corn snacks in various flavors&lt;/li&gt;
+&lt;li&gt;Enjoy the finest selection of traditional Oriental snacks—available directly from us&lt;/li&gt;
+&lt;/ul&gt;</value>
+  </data>
+  <data name="DescriptionCardButton5" xml:space="preserve">
+    <value>Discover Now</value>
+  </data>
+  <data name="DescriptionCardButton6" xml:space="preserve">
+    <value>Discover Our Range</value>
+  </data>
+  <data name="DescriptionCardTitle7" xml:space="preserve">
+    <value>Exquisite Arabic Sweets</value>
+  </data>
+  <data name="DescriptionCardText7" xml:space="preserve">
+    <value>Whether as an elegant gift or for your own coffee table—our sweets are always a delight. Discover the world of fine Oriental confectionery.
+&lt;ul&gt;
+&lt;li&gt;Maamoul, Barazek, Ghraybeh, and much more await you.&lt;/li&gt;
+&lt;li&gt;Traditional recipes featuring high-quality ingredients for the ultimate indulgence.&lt;/li&gt;
+&lt;li&gt;Whether as an elegant gift or for your own coffee table—our sweets are always a highlight.&lt;/li&gt;
+&lt;/ul&gt;</value>
+  </data>
+  <data name="DescriptionCardButton7" xml:space="preserve">
+    <value>To the Sweets</value>
+  </data>
+</root>

@@ -1,0 +1,207 @@
+﻿@implements IDisposable
+@using System.Globalization;
+@using Microsoft.AspNetCore.Localization;
+@inject IStringLocalizer<Syriana_Web.Components.Layout.Header> L
+@inherits ProjectComponentBase
+<header class="header ltr-section">
+    <div class="containerLeft">
+        <ProjektLogo />
+    </div>
+    <div class="containerCenter">
+        @* Search *@
+        <div class="searchBox">
+            <InputText class="form-control searchInput rtl-right" style="height: 40px; font-size: 1rem;" @onfocus="OnSearchInputFocus" @onblur="OnSearchInputBlur" @bind-Value="searchText" placeholder="@L["ProductSearch"]" @oninput="SearchProducts" />
+            @if (IsSearching)
+            {
+                <p class="searchDropdown">Suche läuft...</p>
+            }
+            else if (isDropdownOpen)
+            {
+                @if (searchProducts?.Any() == true)
+                {
+                    <ul class="searchDropdown">
+                        @foreach (var product in searchProducts)
+                        {
+                            <li @onclick="() => OnSelectedProduct(product.Id,searchText)">
+                                <img src="@productImagesService.GetProductImageUrl(product.ProductImages.FirstOrDefault(i => i.IsMain)!)" loading="lazy" />
+                                <strong>
+                                    @(IsArabic  ?product.Name_ar : product.Name_de) </strong>
+                            </li>
+                        }
+                    </ul>
+                }
+                else if (!string.IsNullOrWhiteSpace(searchText))
+                {
+                    <p class="searchDropdown">@L["NoProductsFound"]</p>
+                }
+            }
+        </div>
+    </div>
+    <div class="containerRight">
+        @*cart*@
+        <div class="cart-icon position-relative" @onclick="NavigateToCart" style="cursor:pointer;">
+            <img src="ProjectImages/cart.svg" alt="Cart" width="30" />
+            @if (cartService.GetTotalQuantity() > 0)
+            {
+                <span class="badge bg-danger text-white position-absolute top-0 start-100 translate-middle rounded-pill">
+                    @cartService.GetTotalQuantity()
+                </span>
+            }
+        </div>
+        @* Sprache *@
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <span class="@(IsArabic ? "fi fi-sy" : "fi fi-de")" style="border-radius:2px;"></span>
+            </button>
+            <ul class="dropdown-menu dropdownMenu rtl-right" aria-labelledby="dropdownMenuButton">
+                <li>
+                    <a class="dropdown-item dropdownItem" @onclick="@(() => SetLanguage("de"))"><span class="fi fi-de"></span> Deutsch</a>
+                </li>
+                <li>
+                    <a class="dropdown-item dropdownItem" @onclick="@(() => SetLanguage("ar"))"><span class="fi fi-sy"></span> عربي</a>
+                </li>
+            </ul>
+        </div>
+        @* Konto *@
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                @L["Account"]
+            </button>
+            <ul class="dropdown-menu dropdownMenu rtl-right" aria-labelledby="dropdownMenuButton">
+                <li><a class="dropdown-item dropdownItem" @onclick="@(() => navigationManager.NavigateTo("/", true))">@L["Home"]</a></li>
+                <li><a class="dropdown-item dropdownItem" @onclick="@(() => navigationManager.NavigateTo("/webshop", true))">@L["OurProducts"]</a></li>
+                <AuthorizeView>
+                    <Authorized>
+                        <li><a class="dropdown-item dropdownItem" href="/profile">@L["MyProfile"]</a></li>
+                        <li><a class="dropdown-item dropdownItem" href="/orders">@L["MyOrders"]</a></li>
+                        <li><hr class="dropdown-divider" /></li>
+                        <li><a class="dropdown-item dropdownItem" @onclick="Logout">@L["Logout"]</a></li>
+                    </Authorized>
+                    <NotAuthorized>
+                        <li><a class="dropdown-item dropdownItem" @onclick="Login">@L["Login"]</a></li>
+                    </NotAuthorized>
+                </AuthorizeView>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item dropdownItem" @onclick="@(() => navigationManager.NavigateTo("/favorite"))">@L["Favorites"]</a></li>
+            </ul>
+        </div>
+    </div>
+</header>
+
+@code
+{
+    protected override void OnInitialized()
+    {
+        // event handler for cart changes
+        cartService.OnChange += HandleCartChange;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // get die Höhe der header
+            await js.InvokeVoidAsync("getElementHeight", ".header", "--header-height");
+        }
+    }
+    private void HandleCartChange()
+    {
+        InvokeAsync(StateHasChanged);
+    }
+    private async Task Logout()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        if (user.Identity?.IsAuthenticated == true)
+        {
+            await authService!.Logout();
+            navigationManager.NavigateTo("/", true);
+        }
+    }
+    private void Login()
+    {
+        var fullUri = navigationManager.Uri;
+        var baseUri = navigationManager.BaseUri;
+        string currentPath = fullUri.Replace(baseUri, "/");
+        navigationManager.NavigateTo($"/login?returnUrl={currentPath}");
+    }
+    private void NavigateToCart()
+    {
+        navigationManager.NavigateTo("/cart", false);
+    }
+    // search
+    private List<Product> searchProducts = new();
+    private string searchText = string.Empty;
+    private bool IsSearching = false;
+    private CancellationTokenSource? _cts;
+    private async Task SearchProducts(ChangeEventArgs e)
+    {
+        searchText = e.Value?.ToString() ?? "";
+
+        //  1. Alle noch laufenden Suchvorgänge abbrechen.
+        _cts?.Cancel();
+        _cts = new CancellationTokenSource();
+        var token = _cts.Token;
+
+        if (string.IsNullOrEmpty(searchText))
+        {
+            searchProducts.Clear();
+            IsSearching = false;
+            return;
+        }
+
+        try
+        {
+            // Warten Sie einen Moment (Entprellung), bis der Benutzer mit dem Tippen aufhört.
+            await Task.Delay(300, token);
+            IsSearching = true;
+
+            // local suchen
+            searchProducts = searchService.SearchProductsLocal(searchText, new());
+            if (searchProducts.Count == 0)
+                // if local search returns no results, search from server
+                searchProducts = await searchService.SearchProductsAsync(searchText, new());
+        }
+        catch (OperationCanceledException)
+        {
+
+        }
+        finally
+        {
+            if(!token.IsCancellationRequested)
+            {
+                IsSearching = false;
+                StateHasChanged();
+            }
+        }
+    }
+    private bool isDropdownOpen = false;
+    private async Task OnSearchInputFocus()
+    {
+        isDropdownOpen = true;
+        await Task.Delay(100); // Delay to allow the dropdown to open
+        StateHasChanged();
+    }
+    private async Task OnSearchInputBlur()
+    {
+        await Task.Delay(300); // Delay to allow click events to register
+        isDropdownOpen = false;
+        searchText = string.Empty; // Clear search text on blur
+        StateHasChanged();
+    }
+    private void OnSelectedProduct(int productId, string searchText)
+    {
+        navigationManager.NavigateTo($"/searchProducts/{productId}/{searchText}", true);
+    }
+    // language selection
+    private async Task SetLanguage(string culture)
+    {
+        await cookieService.SetLanguageAsync(culture, true);
+        // page reload to apply new culture
+        navigationManager.NavigateTo(navigationManager.Uri, forceLoad: true);
+    }
+    public void Dispose()
+    {
+        cartService.OnChange -= HandleCartChange;
+    }
+}

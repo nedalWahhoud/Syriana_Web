@@ -1,0 +1,67 @@
+.mainDiv[b-b74dpmebb2] {
+    margin-top: calc(var(--header-height, 96px) + var(--categoryNav-height, 53px) + 10px);
+    margin-bottom: 10px;
+}
+.iconCircle[b-b74dpmebb2] {
+    width: 35px;
+    height: 35px;
+    background-color: #f8f9fa;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6c757d;
+}
+.balanceCard[b-b74dpmebb2] {
+    border-radius: 15px;
+    background: linear-gradient(to bottom right, #ffffff, #fcfcfc);
+}
+.bg-danger-soft[b-b74dpmebb2] {
+    background-color: #fee2e2;
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 4px 8px;
+    border-radius: 6px;
+}
+.titleUnderline[b-b74dpmebb2] {
+    width: 100px; 
+    height: 4px; 
+    background-color: #0d6efd; 
+    border-radius: 2px; 
+    margin-top: 8px; 
+}
+
+@media (max-width: 767.98px) {
+    .balanceText[b-b74dpmebb2] {
+        font-size: 1.5rem !important; /* حجم مناسب للموبايل */
+    }
+
+    .cardBody[b-b74dpmebb2] {
+        padding: 1rem !important;
+    }
+    .tableResponsive[b-b74dpmebb2] {
+        border-radius: 10px;
+        overflow-x: auto;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .customTable[b-b74dpmebb2] {
+        font-size: 12px;
+    }
+
+        .customTable td[b-b74dpmebb2],
+        .customTable th[b-b74dpmebb2] {
+            padding: 6px;
+        }
+/* Button */
+    .btnMobileSmall[b-b74dpmebb2] {
+        padding: 5px 15px !important; 
+        font-size: 12px !important; 
+        min-height: 35px; 
+    }
+
+        .btnMobileSmall .spinner-border[b-b74dpmebb2] {
+            width: 12px; 
+            height: 12px;
+        }
+}

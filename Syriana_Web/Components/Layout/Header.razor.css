@@ -1,0 +1,158 @@
+﻿.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: var(--hederBackgroundColoe);
+    color: white;
+    height: 6rem;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 9999;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 0;
+    /* Flüssige Animation */
+    transition: transform 0.3s ease-in-out;
+    will-change: transform;
+}
+
+    .header.hidden {
+        transform: translateY(-100%); /* Ziehen Sie die Kopfzeile vom Bildschirmrand nach oben. */
+    }
+
+/* vermeiden die Header bewegen von rechts nach links*/
+html[dir="rtl"] .header {
+    direction: ltr;
+    text-align: left;
+}
+
+    .header .containerLeft,
+    .header .containerCenter,
+    .header .containerRight {
+        flex: 1;
+        display: flex;
+        align-items: center;
+    }
+
+    .header .containerLeft {
+        padding-left: 2rem;
+        justify-content: flex-start;
+    }
+
+.header .containerCenter {
+    justify-content: center; 
+    text-align: center;
+    height: 100%;
+}
+
+    .header .containerRight {
+        justify-content: flex-end;
+        padding-right: 2rem;
+        gap: 1rem;
+    }
+
+
+/* search */
+html[dir="rtl"] .searchBox {
+    direction: rtl;
+    text-align: right;
+}
+.searchBox {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    height:100px;
+    align-content:center;
+}
+
+.searchDropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #ccc;
+    border-top: none;
+    max-height: 250px;
+    overflow-y: auto;
+    z-index: 1000;
+    padding: 0.5rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    color: var(--hederBackgroundColoe);
+}
+
+    .searchDropdown li {
+        display:flex;
+        align-items:center;
+        color: var(--hederBackgroundColoe);
+        padding: 0.3rem 0;
+        cursor: pointer;
+    }
+
+        .searchDropdown li:hover {
+            color:white;
+            background-color: var(--hederBackgroundColoe);
+        }
+        .searchDropdown li > * {
+            margin-left: 0.5rem; 
+        }
+        .searchDropdown li img {
+            width: 50px;
+            height: 50px;
+        }
+/**/
+.btn {
+    background-color: var(--hederBackgroundColoe);
+    border: none;
+}
+.dropdown {
+    
+}
+.dropdownMenu {
+    background-color: var(--hederBackgroundColoe);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    color: white;
+}
+.dropdownItem{
+    color:white;
+    cursor:pointer;
+}
+    .dropdownItem:hover {
+        background-color: var(--dropdownBackgroundHover);
+    }
+
+@media (max-width: 768px) {
+    .header {
+        height: 4.5rem;
+    }
+    .header .containerLeft {
+        display: none;
+    }
+
+    .header .containerCenter {
+        flex: 1; /* Es dehnt sich entsprechend dem verfügbaren Platz aus. */
+        justify-content: center;
+        padding: 0 1rem;
+    }
+
+    .header .containerRight {
+        flex-shrink: 0; /* Was schrumpft */
+        flex-grow: 0; /* Was erweitert sich */
+        justify-content: flex-end;
+        padding-right: 1rem;
+    }
+
+    .searchBox {
+        width: 100%;
+        max-width: none;
+    }
+    .searchDropdown li {
+        font-size: 0.8rem;
+    }
+    .searchDropdown li img {
+        width:40px;
+        height:40px;
+    }
+}
+

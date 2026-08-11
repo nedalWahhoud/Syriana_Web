@@ -1,0 +1,35 @@
+﻿@page "/rightOfWithdrawal"
+@namespace Syriana_Web.Components.Layout
+@inject IStringLocalizer<Syriana_Web.Components.Layout.RightOfWithdrawal> L
+<div class="mainDiv">
+    <h1>@L["RightOfWithdrawall"]</h1>
+    <h2>@L["RightsConsumer"]</h2>
+    <p>@L["RightsConsumer1"]</p>
+    <p>@L["RightsConsumer2"]</p>
+    <h2>@L["RightOfWithdrawalText"]</h2>
+    <ul>
+      <li>@ProjectInfo.Name</li>
+	  <li>Adresse: @ProjectInfo.Address</li>
+	  <li>E-Mail: @ProjectInfo.Email</li>
+      <li>Telefon: @ProjectInfo.Whatsapp</li>
+    </ul>
+    <p>@L["RightOfWithdrawalText1"]</p>
+    <h2>@L["ConsequencesRevocation"]</h2>
+    <p>@L["ConsequencesRevocation1"]</p>
+    <p>@L["ConsequencesRevocation2"]</p>
+    <h2>@L["SpecialInstructionsFood"]</h2>
+    <h5>@L["SpecialInstructionsFood1"]</h5>
+    <p>@L["SpecialInstructionsFood2"]</p>
+    <h5>@L["SpecialInstructionsFood3"]</h5>
+    <p>@L["SpecialInstructionsFood4"]</p>
+    <h5>@L["SpecialInstructionsFood5"]</h5>
+    <p>@L["SpecialInstructionsFood6"]</p>
+    <h2>@L["ReturnGoods"]</h2>
+    <p> @((MarkupString)L["ReturnGoods1"].ToString())</p>
+    <div class="logoDiv">
+        <Syriana_Web.Components.Layout.ProjektLogo />
+    </div>
+</div>
+@code {
+    
+}

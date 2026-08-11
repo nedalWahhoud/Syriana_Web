@@ -1,0 +1,311 @@
+﻿@page "/webshop"
+@namespace Syriana_Web.Components.Layout
+@inject IStringLocalizer<Syriana_Web.Components.Layout.Index> L
+@using System.Globalization;
+@implements IDisposable
+
+<div class="mainDiv">
+<HeadContent>
+    <!-- Page Title -->
+    <PageTitle>
+            @(IsArabic ? "سيريانا سوبر ماركت في لويتكرش" : "Syriana Supermarkt In Leutkirch")
+    </PageTitle>
+    <!-- Meta Description -->
+    <meta name="description" content="@(!IsArabic
+        ? "Entdecken Sie die besten arabischen Produkte online: Lebensmittel, Süßigkeiten, Gewürze und Getränke mit schneller Lieferung."
+        : "اكتشف أفضل المنتجات العربية والسورية عبر الإنترنت: مواد غذائية، حلويات، توابل ومشروبات مع توصيل سريع.")" />
+
+    <!-- Meta Keywords -->
+    <meta name="keywords" content="@(!IsArabic
+        ? "arabisches Laden, arabische Lebensmittel, syrische Produkte, Lebensmittel online"
+        : "متجر عربي, مواد غذائية, حلويات, توابل, متجر سوري, تسوق أونلاين")" />
+
+</HeadContent>
+    @if (!IsRendered.Initialized || !IsRendered.ParametersSet || !IsRendered.AfterRender)
+    {
+        <Syriana_Web.Components.Layout.Loading />
+    }
+    else
+    {
+        @* carsousel images *@
+            @if (carouselImagesService.DownloadedCarouselImage.Count > 0)
+            {
+                @if (!IsCarouselFullscreen)
+                {
+                    <Syriana_Web.Components.Layout.CarouselLayout OnHandel="HandleCarouselFullScreen" />
+                }
+                else if (IsCarouselFullscreen)
+                {
+                    <Syriana_Web.Components.Layout.FullscreenCarousel OnHandel="HandleCarouselFullScreen" />
+                }
+            }
+            @* Category Abschnitte *@
+            <div class="divCategory">
+                @foreach (var categoryGroup in mainProductByCategory)
+                {
+                    // category
+                    var category = categoryGroup.Category;
+                    <Syriana_Web.Components.Layout.CategoryLinkIndex category="category" />
+                    <div class="mainProductsCard">
+                        @foreach (var product in categoryGroup.Products)
+                        {
+                        // product
+                            <div class="productsCard" @key="product.Id">
+                                <Syriana_Web.Components.Layout.TopProductsCard product="@product" />
+                                <Syriana_Web.Components.Layout.ProductInfo ProductId="@product.Id" />
+                                <Syriana_Web.Components.Layout.AddDecresaseCard ProductId="@product.Id" />
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+    }
+</div>
+
+@code{
+    private GetItems<Product> getItems = new();
+    private List<ProductByCategory> mainProductByCategory = new();
+    // to exclude categories already loaded in the main product list
+    private List<int> excludeCategoriesIds = new();
+    private List<Categories> allCategories = new();
+    private readonly Random random = new();
+    private User user = new User();
+    protected async override Task OnInitializedAsync()
+    {
+        user = await authService.GetUser();
+        IsRendered.Initialized = true;
+    }
+    protected override async Task OnParametersSetAsync()
+    {
+        getItems = new() { PageSize = 6, Includes = ProductIncludes.ProductImages | ProductIncludes.Category };
+
+        // get carousel images
+        await carouselImagesService.GetActive();
+
+        // get all categories
+        allCategories = categoryService.GetAllCategoriesLocal() ?? await categoryService.GetAllCategoriesAsync();
+        // get on offer products
+        await LoadOnOfferProducts(-1);
+        // get recommended products
+        List<Categories> categories = await categoryService.GetRandomCategories(2, excludeCategoriesIds);
+        await LoadProductsRecommended(categories);
+        // Diese Kategorien beim nächsten Ladevorgang ausschließen
+        excludeCategoriesIds.AddRange(categories.Select(s => s.Id));
+
+        IsRendered.ParametersSet = true;
+    }
+    private DotNetObjectReference<Index>? objRef;
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Das Donnet-Objekt für die Verwendung in JavaScript abrufen
+            objRef = DotNetObjectReference.Create(this);
+            // Eine kurze Verzögerung, um sicherzustellen, dass das ScrollContainer-Element vollständig im DOM gezeichnet wird.
+            await Task.Delay(100);
+            // Setzen Sie das Objekt von donNet in JavaScript und die ID:checkScrollEnd und rufen Sie die Funktion checkScrollEnd aus JavaScript ab.
+            await js.InvokeVoidAsync("scrollHelper.onScrollEnd", objRef);
+            try
+            {
+                // Carousel automatisch laufen nach rended
+                await js.InvokeVoidAsync("initCarousel", "offersCarousel");
+                StateHasChanged();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+        }
+            IsRendered.AfterRender = true;
+    }
+    // recommended
+    public async Task LoadProductsRecommended(List<Categories> categories)
+    {
+        List<int> excludeProductsIds = new();
+        ProductByCategory Recommended = new();
+        foreach (var category in categories)
+        {
+
+            // get products local
+            var productsLocal =  categoryService.GetProductByCategoryIdLocal(category.Id);
+            if (productsLocal != null && productsLocal.Count > 0)
+            {
+                // initialize CartItem for each product
+                foreach (var p in productsLocal)
+                {
+                    p.InitializeCartItem(cartService.GetQuantityOfProduct(p.Id));
+                    excludeProductsIds!.Add(p.Id);
+                }
+                Recommended.Products.AddRange(productsLocal);
+            }
+            // get products server
+            getItems = await categoryService.GetProductsByCategoryIdAsync(category.Id, user.Id, getItems!, excludeProductsIds);
+            if (getItems != null && getItems.Items != null && getItems.Items.Count > 0)
+            {
+                // initialize CartItem for each product
+                foreach (var p in getItems.Items)
+                {
+                    p.InitializeCartItem(cartService.GetQuantityOfProduct(p.Id));
+                    excludeProductsIds!.Add(p.Id);
+                }
+
+                Recommended.Products.AddRange(getItems.Items);
+                //  items reinigen, damit nicht mit http request geschickt wird, da die item groß ist
+                getItems.Items.Clear();
+            }
+            else if (getItems != null && getItems.AllItemsLoaded)
+            {
+            }
+        }
+        // initialize to mainProductByCategory
+        Categories categoryRecommended = new Categories()
+            {
+                Id = 0,
+                Name_de = !IsArabic ? L["RecommendedForYou"] : string.Empty,
+                Name_ar = IsArabic ? L["RecommendedForYou"] : string.Empty
+
+            };
+        if (Recommended.Products.Count == 0)
+        {
+            // if no products found, return
+            return;
+        }
+        // wenn es schon ein angebot gibt, dann an 2. stelle einfügen
+        if (mainProductByCategory.Count > 0 && mainProductByCategory[0].Category.Id == -1)
+            mainProductByCategory.Insert(1, new ProductByCategory() { Category = categoryRecommended, Products = Recommended.Products });
+        else
+            // sonst an 1. stelle einfügen
+            mainProductByCategory.Insert(0, new ProductByCategory() { Category = categoryRecommended, Products = Recommended.Products });
+    }
+    // random products by category
+    public async Task LoadRandomProductsByCategory(List<Categories> Categories)
+    {
+        foreach (var category in Categories)
+        {
+            List<Product> allProducts = new();
+            List<int> excludeProductsIds = new();
+            // get products local
+            var productsLocal =  categoryService.GetProductByCategoryIdLocal(category.Id);
+            if (productsLocal != null && productsLocal.Count > 0)
+            {
+                // initialize CartItem for each product
+                foreach (var p in productsLocal)
+                {
+                    p.InitializeCartItem(cartService.GetQuantityOfProduct(p.Id));
+                    // 
+                    excludeProductsIds!.Add(p.Id);
+                }
+                allProducts.AddRange(productsLocal);
+            }
+
+            // get products server
+            var productsServer = await categoryService.GetProductsByCategoryIdAsync(category.Id, user.Id, getItems, excludeProductsIds);
+            if (productsServer != null && productsServer.Items != null && productsServer.Items.Count > 0)
+            {
+                // initialize CartItem for each product
+                foreach (var p in productsServer.Items)
+                {
+                    p.InitializeCartItem(cartService.GetQuantityOfProduct(p.Id));
+                    // 
+                    excludeProductsIds!.Add(p.Id);
+                }
+
+                allProducts.AddRange(productsServer.Items);
+
+            }
+            else if (productsServer != null && productsServer.AllItemsLoaded)
+            {
+
+            }
+
+            mainProductByCategory.Add(new ProductByCategory() { Category = category, Products = new List<Product>(allProducts) });
+        }
+    }
+    // on offer products
+    public async Task LoadOnOfferProducts(int categoryId)
+    {
+        List<Product> allProducts = new();
+        List<int> excludeProductsIds = new();
+        // get products local
+        var productsLocal =  categoryService.GetProductByCategoryIdLocal(categoryId);
+        if (productsLocal != null && productsLocal.Count > 0)
+        {
+            // initialize CartItem for each product
+            foreach (var p in productsLocal)
+            {
+                p.InitializeCartItem(cartService.GetQuantityOfProduct(p.Id));
+                //
+                //  excludeProductsIds!.Add(p.Id);
+            }
+            allProducts.AddRange(productsLocal);
+        }
+        // get products server
+        var productsServer = await categoryService.GetProductsByCategoryIdAsync(categoryId, user.Id, getItems, excludeProductsIds);
+        if (productsServer != null && productsServer.Items != null && productsServer.Items.Count > 0)
+        {
+            // initialize CartItem for each product
+            foreach (var p in productsServer.Items)
+            {
+                p.InitializeCartItem(cartService.GetQuantityOfProduct(p.Id));
+                //
+                //  excludeProductsIds!.Add(p.Id);
+            }
+            allProducts.AddRange(productsServer.Items);
+
+            // add to local Products list
+            await productService.AddProductToLocal(productsServer.Items);
+        }
+
+        // add to mainProductByCategory
+        if (allProducts.Count > 0)
+            mainProductByCategory.Add(new ProductByCategory() { Category = new Categories() { Id = -1, Name_de = "Produkte im Angebot", Name_ar = "العروض", IsAktiv = true }, Products = allProducts });
+    }
+    // Scroll
+    private bool IsScrollLoading = false;
+    private static readonly SemaphoreSlim _scrollLock = new(1, 1);
+    [JSInvokable]
+    public async Task OnScrollEndReached()
+    {
+        if (!_scrollLock.Wait(0))
+            return;
+        try
+        {
+            if (IsScrollLoading == true)
+                return;
+
+            IsScrollLoading = true;
+            if (allCategories.Count >= 1)
+            {
+                // get recommended products
+                List<Categories> categories = await categoryService.GetRandomCategories(1, excludeCategoriesIds);
+                // Diese Kategorien beim nächsten Ladevorgang ausschließen
+                excludeCategoriesIds.AddRange(categories.Select(s => s.Id));
+                // load random products
+                await LoadRandomProductsByCategory(categories);
+            }
+         
+            await InvokeAsync(StateHasChanged);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+        finally
+        {
+            IsScrollLoading = false;
+            _scrollLock.Release();
+        }
+    }
+    public void Dispose()
+    {
+        objRef?.Dispose();
+        objRef = null;
+    }
+	// carousel
+	private bool IsCarouselFullscreen = false;
+    private void HandleCarouselFullScreen(bool IsCarouselFullscreen1)
+	{
+        IsCarouselFullscreen = IsCarouselFullscreen1;
+	}
+}

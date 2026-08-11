@@ -1,0 +1,151 @@
+﻿@page "/ProductsByCategory/{CategorySlug}/{CategoryId:int}"
+@page "/ProductsByCategory/{CategoryId:int}"
+@using System.Security.Claims
+@namespace Syriana_Web.Components.Layout
+@inject IStringLocalizer<Syriana_Web.Components.Layout.ProductsByCategory> L
+
+<HeadContent>
+	<!-- Page Title -->
+	<PageTitle>
+		@(category != null ? !IsArabic ? category.Name_de : category.Name_ar : L["OnOffer"])
+	</PageTitle>
+
+	<!-- Meta Description -->
+	<meta name="description" content="@(category != null 
+      ? !IsArabic ? $"Entdecken Sie unsere Kategorie {category.Name_de}: hochwertige arabische Lebensmittel online kaufen." : $"اكتشف فئة {category.Name_ar}: أفضل المنتجات العربية والسورية للشراء عبر الإنترنت."
+	  :L["OnOffer"])" />
+
+
+	<!-- Meta Keywords -->
+	<meta name="keywords" content="@(category != null 
+        ?!IsArabic ?  $"{category.Name_de}, arabische Lebensmittel, syrische Produkte" :  $"{category.Name_ar}, مواد غذائية, منتجات سورية, تسوق أونلاين"
+	    : L["OnOffer"])" />
+</HeadContent>
+<div class="mainDiv">
+	@if (!IsRendered.Initialized || !IsRendered.ParametersSet || !IsRendered.AfterRender)
+	{
+		<Syriana_Web.Components.Layout.Loading />
+	}
+	else
+	{
+		<h3 class="@(CategoryId == -1 ? "text-danger" : "text-dark")">
+			<strong>
+				@(CategoryId != -1 ? IsArabic? category?.Name_ar ?? "": category?.Name_de ?? "": L["OnOffer"])
+			</strong>
+		</h3>
+		<div class="productItems">
+			@foreach (var product in products)
+			{
+				<div class="cardProduct">
+					<Syriana_Web.Components.Layout.TopProductsCard Product="product" />
+					<Syriana_Web.Components.Layout.ProductInfo ProductId="@product.Id" />
+					<Syriana_Web.Components.Layout.AddDecresaseCard ProductId="@product.Id" />
+				</div>
+			}
+		</div>
+		<div class="moreLoadContainer">
+			@if (products.Count > 0)
+			{
+				<button type="submit" class="btn btn-primary" @onclick="() => MoreProductsload(true)" disabled="@(IsProcessing || getItems.AllItemsLoaded)">
+					@if (IsProcessing)
+					{
+						<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+						<span class="ms-2">@L["LoadingButton"]</span>
+					}
+					else if (!getItems.AllItemsLoaded)
+					{
+						<span>@L["LoadMore"]</span>
+					}
+					@if (getItems.AllItemsLoaded)
+					{
+						<span>@L["AllItemsLoaded"]</span>
+					}
+				</button>
+			}
+			else
+			{
+				<span class="@(CategoryId != -1 ? "NoItemsFound" : "NoOffersFound")">@(CategoryId != -1 ? L["NoItemsFound"] : L["NoOffersFound"])</span>
+			}
+		</div>
+	}
+</div>
+
+@code {
+	[Parameter] public int CategoryId { get; set; }
+	[Parameter]
+	public string? CategorySlug { get; set; }
+
+	private List<Product> products = new();
+	private Categories category = new();
+	private List<int>? excludeProductsIds = new();
+	private User user = new User();
+	private GetItems<Product> getItems = new();
+	protected override async Task OnParametersSetAsync()
+	{
+		IsRendered.ParametersSet = false;
+		getItems = new() { PageSize = 6, Includes = ProductIncludes.ProductImages | ProductIncludes.Category };
+		excludeProductsIds = new();
+		products.Clear();
+		category = categoryService.GetCategoryByIdLocal(CategoryId) ?? await categoryService.GetCategoryByIdAsync(CategoryId);
+		await MoreProductsload(false);
+
+		// afterRender und Initialized true, weil wir nutzen die Funktionen hier nicht
+		IsRendered.AfterRender = true;
+		IsRendered.ParametersSet = true;
+		IsRendered.Initialized = true;
+	}
+
+	// OnMoreLoad
+	private bool IsProcessing = false;
+	private async Task MoreProductsload(bool IfOnMoreProductsLoad)
+	{
+		if (IsProcessing)
+			return;
+		IsProcessing = true;
+
+		user = await authService.GetUser();
+
+		// -1 is for OnOffer
+		if (!IfOnMoreProductsLoad)
+		{
+			// check if product local exist To relieve pressure on the server
+			var productsLocal = categoryService.GetProductByCategoryIdLocal(CategoryId);
+
+			if (productsLocal != null && productsLocal.Count > 0)
+			{
+				// initialize CartItem for each product
+				foreach (var p in productsLocal)
+				{
+					p.InitializeCartItem(cartService.GetQuantityOfProduct(p.Id));
+					excludeProductsIds!.Add(p.Id);
+				}
+				products.AddRange(productsLocal);
+			}
+		}
+		// from Server
+		getItems = await categoryService.GetProductsByCategoryIdAsync(CategoryId, user.Id, getItems, excludeProductsIds);
+		if (getItems != null && getItems.Items != null && getItems.Items.Count > 0)
+		{
+			// initialize CartItem for each product
+			foreach (var p in getItems.Items)
+			{
+				p.InitializeCartItem(cartService.GetQuantityOfProduct(p.Id));
+				excludeProductsIds!.Add(p.Id);
+			}
+
+			products.AddRange(getItems.Items);
+			//  items reinigen, damit nicht mit http request geschickt wird, da die item groß ist
+			getItems.Items.Clear();
+
+			// add to local Products list
+			_ = Task.Run(async () =>
+			{
+				await productService.AddProductToLocal(products);
+			});
+		}
+		IsProcessing = false;
+	}
+	
+
+
+}

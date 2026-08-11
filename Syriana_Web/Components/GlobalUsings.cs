@@ -1,0 +1,10 @@
+﻿global using System.Net.Http.Json;
+global using Microsoft.Extensions.Options;
+global using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+global using Microsoft.Extensions.Localization;
+global using Syriana_Web.Components.Models;
+global using Microsoft.AspNetCore.Components.Authorization;
+global using System.Security.Claims;
+global using System.Globalization;
+global using Syriana_Web.Components.CategoriesF;
+global using Syriana_Web.Components.ProductsF;

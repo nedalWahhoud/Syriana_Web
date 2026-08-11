@@ -1,0 +1,84 @@
+﻿@page "/searchProducts/{productId:int}"
+@page "/searchProducts/{productId:int}/{searchText}"
+@namespace Syriana_Web.Components.Layout
+@inject IStringLocalizer<Syriana_Web.Components.Layout.SearchProducts> L
+
+<div class="mainDiv">
+	@if (!IsRendered.Initialized || !IsRendered.ParametersSet || !IsRendered.AfterRender)
+	{
+		<Syriana_Web.Components.Layout.Loading />
+	}
+	else
+	{
+		@if (searchedProducts.Count > 0)
+		{
+			<div class="productItems">
+				@for (int i = 0; i < searchedProducts.Count; i++)
+				{
+					var product = searchedProducts[i];
+					<div class="cardProduct">
+						<Syriana_Web.Components.Layout.TopProductsCard Product="product" />
+						<Syriana_Web.Components.Layout.ProductInfo ProductId="@product.Id" />
+						<Syriana_Web.Components.Layout.AddDecresaseCard ProductId="@product.Id" />
+					</div>
+				}
+			</div>
+		}
+		else
+		{
+			<p>@L["ProductNotFound"]</p>
+		}
+	}
+</div>
+
+@code {
+	[Parameter]
+	public int productId { get; set; }
+	[Parameter]
+	public string? searchText { get; set; } = string.Empty;	
+	private List<Product> searchedProducts = new();
+
+	protected override async Task OnParametersSetAsync()
+	{
+		searchedProducts = new();
+		// get on clicked item
+		var product = productService.GetProductByIdLocal(productId)
+					?? await productService.GetProductByIdAsync(productId);
+		// add to mainPage product list
+		if (product != null)
+		{
+			product.InitializeCartItem(cartService.GetQuantityOfProduct(product.Id));
+			searchedProducts.Add(product);
+		}
+
+		// search first local
+		List<Product> searchedResults = new();
+		searchedResults = searchService.SearchProductsLocal(searchText!, new() { productId });
+		// if local search returns no results, search from server
+		if (searchedResults != null && searchedResults.Count == 0)
+		{
+			searchedResults = await searchService.SearchProductsAsync(searchText!, new() {productId});
+			// add to local product list
+			if (searchedResults != null && searchedResults.Count > 0)
+			{
+				await productService.AddProductToLocal(searchedResults);
+			}
+		}
+
+		// add to mainPage product list
+		if (searchedResults != null && searchedResults.Count > 0)
+		{
+			foreach (var p in searchedResults)
+			{
+				p.InitializeCartItem(cartService.GetQuantityOfProduct(p.Id));
+			}
+		
+			searchedProducts.InsertRange(searchedProducts.Count,searchedResults);
+		}
+		
+		// afterRender und Initialized true, weil wir nutzen die Funktionen hier nicht
+		IsRendered.AfterRender = true;
+		IsRendered.ParametersSet = true;
+		IsRendered.Initialized = true;
+	}
+}

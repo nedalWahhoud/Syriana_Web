@@ -1,0 +1,47 @@
+﻿@page "/auth-success"
+@using Microsoft.Extensions.Primitives
+<div class="mainDiv">
+    <h3>Logging in...</h3>
+</div>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        var uri = navigationManager.ToAbsoluteUri(navigationManager.Uri);
+        var query = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query);
+        LoginModel loginModel = new();
+        if (query.TryGetValue("token", out var tokenValues) && !StringValues.IsNullOrEmpty(tokenValues))
+        {
+            string token = tokenValues.ToString(); // sichere Token-Wert extrahieren
+
+            // get rememberMe value from query parameters
+            bool rememberMe = false;
+            if (query.TryGetValue("rememberMe", out var rememberMeValue))
+            {
+                bool.TryParse(rememberMeValue, out rememberMe);
+            }
+            loginModel.RememberMe = rememberMe;
+            loginModel.Token = token;
+            var result = authService!.GoogleLogin(loginModel);
+            if (result.Result == true)
+            {
+                
+                int UserId = (await authService.GetUser()).Id;
+              
+                // sync locale Favorite
+                await favoriteService.SyncFavoritesAfterLogin(UserId);
+
+                navigationManager!.NavigateTo("/", true);
+            }
+            else
+            {
+                _ = js.InvokeVoidAsync("window.alert", result.Message);
+                navigationManager.NavigateTo("/login");
+            }
+        }
+        else
+        {
+            navigationManager.NavigateTo("/login");
+        }
+    }
+}

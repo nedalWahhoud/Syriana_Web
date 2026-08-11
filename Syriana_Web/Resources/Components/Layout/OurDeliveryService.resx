@@ -1,0 +1,193 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Address" xml:space="preserve">
+    <value>Address:</value>
+  </data>
+  <data name="AreasFixed" xml:space="preserve">
+    <value>Delivery areas &amp; fixed days</value>
+  </data>
+  <data name="AreasFixed1" xml:space="preserve">
+    <value>Deliveries will be made:</value>
+  </data>
+  <data name="AreasFixed2" xml:space="preserve">
+    <value>&lt;ul&gt;
+
+&lt;li&gt;&lt;strong&gt;In Leutkirch&lt;/strong&gt; Daily: Leutkirch im Allgäu area and surrounding area&lt;/strong&gt; – Delivery day: Daily (only during our opening hours)&lt;/em&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;strong&gt;Towards Ravensburg&lt;/strong&gt; Once a week: Kisslegg, Wolfegg, Vogt, Waldburg, Schlier, Ravensburg, Weingarten, Baienfurt, Weißenau, Meckenbeuren, Tettnang, Bodnegg, Grünkraut, Amtzell and surrounding area&lt;/strong&gt; – Delivery day: Saturdays&lt;/li&gt;
+
+&lt;li&gt;&lt;strong&gt;Towards Lindau&lt;/strong&gt; Every two weeks: Lindau, Lindenberg im Allgäu, Scheidegg, Weiler-Simmerberg, Oberstaufen and surrounding area&lt;/strong&gt; – Delivery day: Thursdays&lt;/li&gt;
+
+&lt;li&gt;&lt;strong&gt;Towards Wangen&lt;/strong&gt; Every two weeks: Wangen im Allgäu, Waltershofen, Ratzenried, Argenbühl, Isny ​​im Allgäu and surrounding area&lt;/strong&gt; – Delivery day: Saturdays&lt;/li&gt;
+
+Towards Bad Waldsee&lt;/strong&gt; every two weeks: Bad Wurzach, Bad Waldsee, Reute &lt;strong&gt;and surrounding areas&lt;/strong&gt; – Delivery day: Saturdays&lt;/li&gt;
+
+Towards Memmingen&lt;/strong&gt; every two weeks: Aichstetten, Aitrach, Memmingen, Wolfertschwenden, Bad Grönenbach, Altusried, Kempten, Immenstadt im Allgäu, Sonthofen, Fischen im Allgäu, Oberstdorf &lt;strong&gt;and surrounding areas&lt;/strong&gt; – Delivery day: Thursdays&lt;/li&gt;
+
+&lt;/ul&gt;</value>
+  </data>
+  <data name="deliveryServiceWorks" xml:space="preserve">
+    <value>This is how the delivery service works</value>
+  </data>
+  <data name="deliveryServiceWorks1" xml:space="preserve">
+    <value>&lt;ol&gt;
+
+&lt;li&gt;Select the "Delivery via our delivery service" option when completing your purchase.&lt;/li&gt;
+
+&lt;li&gt;We will automatically notify you of the specific delivery date based on your delivery area.&lt;/li&gt;
+
+&lt;li&gt;Please collect your order in person or authorize an authorized person to collect it.&lt;/li&gt;
+
+&lt;li&gt;Food will be carefully packaged and refrigerated during transit if necessary.&lt;/li&gt;
+&lt;ol&gt;</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>E-Mail:</value>
+  </data>
+  <data name="IfQuestions" xml:space="preserve">
+    <value>Contact us if you have any questions</value>
+  </data>
+  <data name="IfQuestions1" xml:space="preserve">
+    <value>If you have any questions about your delivery date or delivery area, please contact us:</value>
+  </data>
+  <data name="ImportantInstructions" xml:space="preserve">
+    <value>Important instructions</value>
+  </data>
+  <data name="ImportantInstructions1" xml:space="preserve">
+    <value>&lt;ul&gt;
+
+&lt;li&gt;The delivery option is binding once the order has been completed.&lt;/li&gt;
+
+&lt;li&gt;For perishable food items, the customer is obligated to store the goods properly **immediately after delivery**.&lt;/li&gt;
+
+&lt;li&gt;Delivery dates may be postponed for unforeseen reasons. The customer will be informed in a timely manner.&lt;/li&gt;
+
+&lt;/ul&gt;</value>
+  </data>
+  <data name="OurDeliveryServiceInformation" xml:space="preserve">
+    <value>Our delivery service information</value>
+  </data>
+  <data name="OurDeliveryServiceInformation1" xml:space="preserve">
+    <value>Our delivery service delivers your orders regularly on fixed days, depending on the delivery area.</value>
+  </data>
+  <data name="WhatsApp" xml:space="preserve">
+    <value>WhatsApp:</value>
+  </data>
+</root>

@@ -1,0 +1,27 @@
+﻿@page "/ourdeliveryservice"
+@namespace Syriana_Web.Components.Layout
+@inject IStringLocalizer<Syriana_Web.Components.Layout.OurDeliveryService> L
+<div class="mainDiv">
+	<h1>@L["OurDeliveryServiceInformation"]</h1>
+	<p>@L["OurDeliveryServiceInformation1"]</p>
+	<h2>@L["AreasFixed"]</h2>
+	<p>@L["AreasFixed1"]</p>
+	@((MarkupString)L["AreasFixed2"].ToString())
+	<h2>@L["deliveryServiceWorks"]</h2>
+	@((MarkupString)L["deliveryServiceWorks1"].ToString())
+	<h2>@L["ImportantInstructions"]</h2>
+	@((MarkupString)L["ImportantInstructions1"].ToString())
+	<h2>@L["IfQuestions"]</h2>
+	<p>@L["IfQuestions1"]</p>
+	<p>@ProjectInfo.Name</p>
+	<p>@L["Address"] @ProjectInfo.Address</p>
+	<p>@L["Email"] @ProjectInfo.Email</p>
+	<p>@L["WhatsApp"] <span style="direction:ltr; unicode-bidi:isolate; display:inline-block;">@ProjectInfo.Whatsapp</span></p>
+	<div class="logoDiv">
+		<Syriana_Web.Components.Layout.ProjektLogo />
+	</div>
+</div>
+
+@code {
+
+}

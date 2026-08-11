@@ -1,0 +1,139 @@
+﻿@using System.Globalization;
+@inject IStringLocalizer<Syriana_Web.Components.Layout.MainLayout> L
+@inherits LayoutComponentBase
+@if (!HeaderHidden)
+{
+    <Header />
+    <CategoryNav />
+}
+<div id="app" class="page">
+    <main class="mainContent">
+        <article class="content">
+            <ErrorBoundary @ref="errorBoundary">
+                <ChildContent>
+                    @Body
+                    @* cookie benner *@
+                    @if (!hasAccepted && shouldShow)
+                    {
+                        <div class="cookieBanner">
+                            <span>@L["CookieMessage"]</span>
+                            <div class="buttonGroup @((CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "ar") ? "rtl" : "ltr")">
+                                <button class="btn btn-primary me-2" @onclick="Accept">@L["Yes"]</button>
+                                <button class="btn btn-secondary" @onclick="Decline">@L["No"]</button>
+                            </div>
+                        </div>
+                    }
+                    <div @onclick="OnOpenWhatsApp" class="whatsappIcon">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" />
+                    </div>
+                </ChildContent>
+                <ErrorContent>
+                    @* Automatischer Reload nach Fehler, um Einfrieren zu verhindern*@
+                    @{
+                        TriggerAutomaticReload();
+                    }
+                    <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 100vh;">
+                        <div class="spinner-border text-danger" role="status" style="width: 3rem; height: 3rem;">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <h5 class="mt-3 text-muted fw-light">Ein Fehler ist aufgetreten. Versuche es erneut...</h5>
+                    </div>
+                </ErrorContent>
+            </ErrorBoundary>
+        </article>
+    </main>
+</div>
+@if (!HeaderHidden)
+{
+    <Footer />
+}
+
+@*<div id="blazor-error-ui">
+    An unhandled error has occurred.
+    <a href="" class="reload">Reload</a>
+    <a class="dismiss">🗙</a>
+</div>*@
+
+@code{
+    private bool HeaderHidden => navigationManager.Uri.Contains("login") ||
+    navigationManager.Uri.Contains("signup") ||
+    navigationManager.Uri.Contains("forgotpassword") ||
+    navigationManager.Uri.Contains("confirmemail");
+    private bool hasAccepted;
+    private bool shouldShow = false;
+    private ErrorBoundary? errorBoundary;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Check user authentication status and update the authentication state accordingly
+        _ = CheckUserStatusAsync();
+        // starten get alle categories, damit bei categoryNav schneller geladen wird
+        categoryService.taskCatyrories = categoryService.GetAllCategoriesAsync();
+
+        // Initialize the cartService to get the saved cart
+        await cartService.InitializeAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Check for cookie consent
+            hasAccepted = await cookieService.HasAcceptedAsync();
+            // überprüfe ob Benutzer schon die Cookie Banner angabe gegeben hat
+            shouldShow = await cookieService.GetBannerSessionAsync();
+            //
+            StateHasChanged();
+        }
+    }
+    private async Task Accept()
+    {
+        await cookieService.SetConsentAsync(true);
+        hasAccepted = true;
+        StateHasChanged();
+    }
+    private async Task Decline()
+    {
+        await cookieService.SetConsentAsync(false);
+        // verschwinde Banner
+        hasAccepted = true;
+        StateHasChanged();
+    }
+
+    private async Task OnOpenWhatsApp()
+    {
+        await js.InvokeVoidAsync("whatsappRedirect.openWhatsApp", ProjectInfo.Whatsapp, " ");
+    }
+
+    private async Task CheckUserStatusAsync()
+    {
+        // check admin status
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var localUser = authState.User;
+        if (localUser.Identity != null && localUser.Identity.IsAuthenticated)
+        {
+            int userId = (await authService.GetUser()).Id;
+            LoginModel loginModel = await authService.GetItemsUsersAsync(userId);
+            if (loginModel == null)
+            {
+                await authService.Logout();
+                return;
+            }
+            else
+            {
+                // Benachrichtige den Anbieter des Authentifizierungsstatus über den neuen Authentifizierungsstatus.
+                (AuthStateProvider as CustomAuthStateProvider)?.NotifyUserAuthentication(loginModel.Token);
+                // aktualisieren Sie den Token im Local Storage, wenn nicht sessionToken ist
+                string sessionToken = await (AuthStateProvider as CustomAuthStateProvider)?.SessionStorageGet("authToken")!;
+                if (sessionToken == null)
+                    (AuthStateProvider as CustomAuthStateProvider)?.LocalstorageSet("authToken", loginModel.Token);
+            }
+        }
+    }
+    // error
+    private void TriggerAutomaticReload()
+    {
+        // forceLoad: true zwingt den Browser zu einer vollständigen Aktualisierung, um ein Einfrieren des Inhalts zu verhindern.
+        navigationManager.NavigateTo(navigationManager.Uri, forceLoad: true);
+    }
+}

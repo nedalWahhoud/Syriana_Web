@@ -1,0 +1,75 @@
+﻿@page "/confirmemail"
+@namespace Syriana_Web.Components.Layout
+@inject IStringLocalizer<Syriana_Web.Components.Layout.ConfirmEmail> L
+@inject NavigationManager NavManager
+
+@if (activateRequest.IsLoading)
+{
+    <Syriana_Web.Components.Layout.Loading />
+}
+else
+{
+    <div class="mainDiv">
+        <h3>@activateRequest.StatusMessage</h3>
+
+        @if (activateRequest.IsActivated)
+        {
+            <button class="btn btn-primary" @onclick="GoToLogin">@L["GoToLogin"]</button>
+        }
+    </div>
+}
+
+@code {
+    private ActivateRequest activateRequest { get; set; } = new ActivateRequest();
+
+    protected override async Task OnInitializedAsync()
+    {
+        activateRequest.IsLoading = true;
+        var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
+        var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
+
+        var userId = query["userId"];
+        var token = query["token"];
+
+        if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(token))
+        {
+            activateRequest.StatusMessage = L["MissingData"];
+            activateRequest.IsActivated = false;
+            return;
+        }
+
+        activateRequest = new ActivateRequest
+			{
+				UserId = userId,
+				Token = token
+			};
+
+        var result = await authService.UserActivate(activateRequest);
+        if (result.Result)
+        {
+            activateRequest.StatusMessage = L["ConfirmationSuccessful"];
+            activateRequest.IsActivated = true;
+
+            // sync locale Favorite
+            if (int.TryParse(activateRequest.UserId, out int userIdAsInt))
+            {
+                await favoriteService.SyncFavoritesAfterLogin(userIdAsInt);
+            }
+            else
+            {
+                Console.WriteLine("SyncFavoritesAfterLogin Fehler: UserId ist keine gültige Zahl.");
+            }
+
+        }
+        else
+        {
+            activateRequest.StatusMessage = result.Message!;
+            activateRequest.IsActivated = false;
+        }
+        activateRequest.IsLoading = false;
+    }
+    private void GoToLogin()
+    {
+		NavManager.NavigateTo("/login");
+	}
+}

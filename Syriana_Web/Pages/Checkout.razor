@@ -1,0 +1,813 @@
+﻿@page "/checkout"
+@using System.Security.Claims
+@implements IDisposable
+@namespace Syriana_Web.Components.Layout
+@inject IStringLocalizer<Syriana_Web.Components.Layout.Checkout> L
+<div class="mainDiv">
+	@if (!IsRendered.Initialized || !IsRendered.ParametersSet || !IsRendered.AfterRender)
+	{
+		<Syriana_Web.Components.Layout.Loading />
+	}
+	else
+	{
+		<div class="mainContainer">
+			@if (cartService.CartItems.Count == 0 || orderStatusEnum == CheckoutOrderEnum.Processing)
+			{
+				<div class="backToMainPage">
+					@if (orderStatusEnum == CheckoutOrderEnum.Commpleted)
+					{
+						<p>@backToMainPageMessage</p>
+					}
+					else if (orderStatusEnum == CheckoutOrderEnum.Processing)
+					{
+						<div class="d-flex align-items-center">
+							<div class="spinner-border text-primary me-2" role="status">
+								<span class="visually-hidden">Loading...</span>
+							</div>
+						</div>
+					}
+					@if (orderStatusEnum != CheckoutOrderEnum.Processing)
+					{
+						<button @onclick="OnMainPage" class="btn">@L["BackToHomeButton"]</button>
+					}
+				</div>
+			}
+			else
+			{
+				<div class="address">
+					<h4>@L["DeliveryTitle"]</h4>
+
+					@if (addressService.DownloadedAddresses.Count > 0)
+					{
+						<div class="addressRadioDiv">
+							<InputRadioGroup @bind-Value="selectedAddressId" class="addressRadio">
+								@foreach (var address in addressService.DownloadedAddresses)
+								{
+									<div class="addressOption" @ondblclick="() => OndblclickUpdateAddress(address)">
+										<label>
+											<InputRadio Value="@address.Id" />
+											@address.FirstName @address.LastName - @address.Street, @address.ZipCode @address.City
+										</label>
+										<button type="button" class="btn deleteButton" @onclick="() => DeleteAddress(address.Id)">
+											@L["DeleteButton"]
+										</button>
+									</div>
+								}
+							</InputRadioGroup>
+						</div>
+					}
+					<p @onclick="OnAddressForm" class="pShowAddressForm">@L["AddNewAddress"]</p>
+
+				</div>
+				<div class="payment">
+					<h4>@L["PaymentTitle"]</h4>
+					<div class="paymentMethodOption">
+						<EditForm Model="@this">
+							<InputRadioGroup Value="@selectedPaymentId" ValueChanged="@((int val) => OnPaymentChanged(val))" ValueExpression="() => selectedPaymentId">
+								@for (int i = 0; i < orderService.DownloadedPaymentMethods.Count; i++)
+								{
+									if (orderService.DownloadedPaymentMethods[i].Id == 1 || orderService.DownloadedPaymentMethods[i].Id == 2 ||
+									orderService.DownloadedPaymentMethods[i].Id == 5)
+									{
+										var paymentMethod = orderService.DownloadedPaymentMethods[i];
+										<label>
+											<InputRadio Value="@paymentMethod.Id" />
+											@(IsArabic ? paymentMethod.Description_ar : paymentMethod.Description_de)
+										</label>
+									}
+								}
+								@if (selectedPaymentId == 2)
+								{
+									<p class="alert alert-primary mt-3 mb-3" role="alert">
+										@L["OurDeliveryServiceNote"]
+									</p>
+									<a href="/ourdeliveryservice" target="_blank">@L["OurDeliveryServiceInformation"]</a>
+								}
+								<label>
+									@L["PaymentNote"]
+								</label>
+							</InputRadioGroup>
+						</EditForm>
+						@* Discount Code *@
+						<div class="mb-3">
+							<label>@L["HaveCode"]</label>
+							<div class="input-group d-flex gap-2 mb-1">
+								<InputText id="discountCode" class="form-control" @bind-Value="discountCode.Code" />
+								<button type="button" class="btn btn-primary" @onclick="OnCode">
+									@if (IsDiscountCodeLoading)
+									{
+										<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+									}
+									else
+									{
+										@L["EnterCode"]
+									}
+								</button>
+							</div>
+							@{
+								string message = null!;
+								if (discountCode.Message != null && !string.IsNullOrEmpty(discountCode.Message))
+								{
+									message = discountCode.Message;
+								}
+								else if (discountCategory.Message != null && !string.IsNullOrEmpty(discountCategory.Message))
+								{
+									message = discountCategory.Message;
+								}
+
+								double DiscountPercentageText = 0;
+								char? valueSymbol = null;
+								if (discountCode.DiscountAmount != 0)
+								{
+									DiscountPercentageText = discountCode.DiscountAmount;
+									valueSymbol = discountCode.DiscountType == DiscountType.Percentage ? '%' : '€';
+								}
+								else if (discountCategory.DiscountAmount != 0)
+								{
+									DiscountPercentageText = discountCategory.DiscountAmount;
+									valueSymbol = discountCategory.DiscountType == DiscountType.Percentage ? '%' : '€';
+								}
+								else
+								{
+									DiscountPercentageText = 0;
+								}
+
+								<label class="mt-2 text-success">@L["DiscountValue"]: @DiscountPercentageText @valueSymbol</label>
+								<label class="mt-2 text-danger">@message</label>
+							}
+						</div>
+					</div>
+				</div>
+				@* shipping *@
+				@if (selectedPaymentId == 5)
+				{
+					<div class="shipping">
+						<h4>@L["ShippingMethod"]:</h4>
+						<div class="shippingProvider">
+							<InputRadioGroup @bind-Value="@order.ShippingProviderId">
+								@foreach (ShippingProvider item in orderService.DownloadedShippingProviders)
+								{
+									if (item.Id == 1)
+									{
+										<label>
+											<InputRadio Value="@item.Id" />
+											@(IsArabic ? item.Name_ar : item.Name_de)
+										</label>
+									}
+								}
+							</InputRadioGroup>
+						</div>
+						<label>@L["ShippingCosts"]:<span style="font-weight:bold;">&nbsp;@((order.ShippingProviders?.PublicShippingCost ?? 0).ToString("C", new System.Globalization.CultureInfo("de-DE")))</span></label>
+					</div>
+				}
+				@* placeOrder *@
+				<div class="placeOrder">
+					@L["Items"]: @cartService.GetTotalQuantity()
+					<span>
+						@if (discountCode != null && discountCode.Id > 0)
+						{
+							var result = GetFinalPriceWithDiscount();
+							<span class="text-success">@L["YouSave"] @result.discountValue.ToString("C", new System.Globalization.CultureInfo("de-DE")) </span>
+						}
+						else if (discountCategory != null && discountCategory.Id > 0 && discountCategory.CategoriesId > 0)
+						{
+							var result = GetFinalPriceWithDiscountCategory();
+							<span class="text-success">@L["YouSave"] @result.discountValue.ToString("C", new System.Globalization.CultureInfo("de-DE")) </span>
+						}
+						else
+						{
+							GetFinalPrice();
+						}
+					</span>
+					@{
+						double totalPrice = 0;
+						if (order.ShippingProviders != null && order.ShippingProviderId > 0)
+						{
+							<span>@L["ShippingCosts"]: @order.ShippingProviders?.PublicShippingCost.ToString("C", new System.Globalization.CultureInfo("de-DE"))</span>
+							totalPrice = order.TotalPrice + order.ShippingProviders?.PublicShippingCost ?? 0;
+						}
+						else
+							totalPrice = order.TotalPrice;
+					}
+					<span><strong>@L["TotalPrice"]:</strong> @totalPrice.ToString("C", new System.Globalization.CultureInfo("de-DE"))</span>
+					<span>@L["Tax"]</span>
+
+					<InputTextArea class="form-control" @bind-Value="order.Notes " placeholder="@L["AddNotePlaceholder"]" />
+					<div class="placeOrderB">
+						<div class="form-check">
+							<InputCheckbox id="agbCheck" @bind-Value="agbAkzeptiert" class="form-check-input" required />
+							<label class="form-check-label" for="agbCheck">
+								<a href="/agb" target="_blank">@L["Agb"]</a> und die <a href="/rightOfWithdrawal" target="_blank">@L["RightOfWithdrawal"]</a> @L["AgbAccept"]
+							</label>
+						</div>
+						<AuthorizeView>
+							<Authorized Context="auth">
+								<button class="btn btnPay" type="button" @onclick="OnPay">@L["BuyButton"]</button>
+							</Authorized>
+							<NotAuthorized Context="auth">
+
+								<button type="button" @onclick="OnEinloggen" class="btn btnEinloggen">@L["LoginButton"]</button>
+
+								<EditForm Model="@user" OnValidSubmit="OnPay">
+									<DataAnnotationsValidator />
+									<div class="form-group mb-1">
+										<InputText @bind-Value="user.UserName" placeholder="@L["inputUsername"]" class="form-control" />
+										<ValidationMessage For="@(() => user.UserName)" />
+									</div>
+
+									<div class="form-group mb-1">
+										<InputText @bind-Value="user.Email" placeholder="@L["InputEmail"]" class="form-control" />
+										<ValidationMessage For="@(() => user.Email)" />
+									</div>
+									<button type="submit" class="btn btnPay mt-2">@L["BuyWithoutLoginButton"]</button>
+								</EditForm>
+
+							</NotAuthorized>
+						</AuthorizeView>
+
+					</div>
+				</div>
+
+			}
+			@* Message Wahrung Bereich *@
+			@if (MessageWarning != null)
+			{
+				<div class="messageWarning">
+					<i class="bi bi-exclamation-triangle-fill"></i>
+					<p>
+						@MessageWarning
+					</p>
+				</div>
+			}
+		</div>
+		@* address *@
+		@if (IsAddAddressMode || IsUpdateAddressMode)
+		{
+
+			Address address = IsAddAddressMode ? newAddress : updateAddress;
+
+			<div class="overlay">
+				<div class="addressForm">
+					<h3>@L["AddressFormTitle"]</h3>
+					<EditForm Model="@address" OnValidSubmit="HandleAddressSubmit">
+						<DataAnnotationsValidator />
+						<div class="form-group">
+							<ValidationMessage style="color:red;" For="@(() => address.FirstName)" />
+							<label>@L["FirstName"]</label>
+							<InputText class="form-control" @bind-Value="address.FirstName" />
+						</div>
+						<div class="form-group">
+							<ValidationMessage style="color:red;" For="@(() => address.LastName)" />
+							<label>@L["LastName"]</label>
+							<InputText class="form-control" @bind-Value="address.LastName" />
+						</div>
+						<div class="form-group">
+							<ValidationMessage style="color:red;" For="@(() => address.Phone)" />
+							<label>@L["Phone"]</label>
+							<InputText class="form-control" @bind-Value="address.Phone" />
+						</div>
+						<div class="form-group">
+							<ValidationMessage style="color:red;" For="@(() => address.Street)" />
+							<label>@L["Street"]</label>
+							<InputText class="form-control" @bind-Value="address.Street" />
+						</div>
+						<div class="form-group">
+							<ValidationMessage style="color:red;" For="@(() => address.ZipCode)" />
+							<label>@L["ZipCode"]</label>
+							<InputText class="form-control" @bind-Value="address.ZipCode" />
+						</div>
+						<div class="form-group">
+							<ValidationMessage style="color:red;" For="@(() => address.City)" />
+							<label>@L["City"]</label>
+							<InputText class="form-control" @bind-Value="address.City" />
+						</div>
+						<div class="form-group">
+							<label>@L["Country"]</label>
+							<InputText class="form-control" @bind-Value="address.Country" readonly />
+						</div>
+						<div class="addressBtn">
+							<button type="submit" class="btn addAddressB"> @(IsAddAddressMode ? L["AddAddressButton"] : L["UpdateAddressButton"])</button>
+							<button type="button" class="btn addProductCancelB" @onclick="CancelAddAddressForm">@L["CancelButton"]</button>
+						</div>
+					</EditForm>
+				</div>
+			</div>
+			if (IsAddAddressMode)
+				newAddress = address;
+			else
+				updateAddress = address;
+		}
+	}
+</div>
+
+@code {
+	private string MessageWarning = null!;
+	private bool agbAkzeptiert = false;
+	CheckoutOrderEnum orderStatusEnum = new CheckoutOrderEnum();
+	private User user = new User();
+	protected override async Task OnInitializedAsync()
+	{
+		// user authentication
+		var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+		var user = authState.User;
+		if (user.Identity?.IsAuthenticated == true)
+		{
+			int IntuserId = (await authService.GetUser()).Id;
+			// set user id to user object
+			this.user.Id = IntuserId;
+			this.user.BirthDate = user.FindFirst(c => c.Type == ClaimTypes.DateOfBirth)?.Value!;
+			this.user.SignupProvider = user.FindFirst(c => c.Type == "SignupProvider")?.Value!;
+
+			// get addresses this user and in center list adding
+			await addressService.GetAddressesByUserIdAsync(IntuserId);
+			// default address
+			if (addressService.DownloadedAddresses.Count > 0)
+				selectedAddressId = addressService.DownloadedAddresses[0].Id;
+			// get ShippingProvider
+			_ = await orderService.GetShippingProvidersAsync();
+		}
+		// get payment methods
+		await orderService.GetPaymentMethodsAsync();
+		// set default order status
+		orderStatusEnum = CheckoutOrderEnum.Pending;
+		// afterRender und ParameterSet true, weil wir nutzen die Funktionen hier nicht
+		IsRendered.ParametersSet = true;
+		IsRendered.Initialized = true;
+	}
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+		{
+			var result = await cartService.LoadCartProductsAsync();
+			if (!result.Result)
+			{
+				MessageWarning = result.Message?.ToString() ?? "Warnung Nachricht ist null gekommen";
+				return;
+			}
+
+			// address default
+			if (addressService.DownloadedAddresses.Count > 0)
+			{
+				selectedAddressId = addressService.DownloadedAddresses[0].Id;
+			}
+			IsRendered.AfterRender = true;
+			StateHasChanged();
+		}
+	}
+	// einloggen
+	private void OnEinloggen()
+	{
+		var fullUri = navigationManager.Uri;
+		var baseUri = navigationManager.BaseUri;
+		string currentPath = fullUri.Replace(baseUri, "/");
+		navigationManager.NavigateTo($"/login?returnUrl={currentPath}");
+	}
+	// Gust Order
+	private void OnAddressForm()
+	{
+		IsAddAddressMode = !IsAddAddressMode;
+	}
+	// address
+	private async Task HandleAddressSubmit()
+	{
+		if (IsAddAddressMode)
+		{
+			await AddAddress();
+		}
+		else
+		{
+			await UpdateAddress();
+		}
+	}
+	// add address
+	private bool IsAddAddressMode { get; set; } = false;
+	private Address newAddress = new();
+	private int selectedAddressId = 0;
+	private async Task AddAddress()
+	{
+		// add user id, if gust than set it to null
+		if (user.Id > 0)
+			newAddress.UserId = user.Id;
+
+		var result = await addressService.AddAddressAsync(newAddress);
+		if (result.Result)
+		{
+			OnAddressForm(); // Close the form after adding the address
+			newAddress = new Address(); // Reset the newAddress object
+			selectedAddressId = addressService.DownloadedAddresses[0].Id; // Set the selected address ID to the newly added address
+		}
+		else
+		{
+			MessageWarning = result.Message?.ToString() ?? "Warnung Nachricht ist null gekommen";
+		}
+	}
+	private void CancelAddAddressForm()
+	{
+		IsAddAddressMode = false;
+		IsUpdateAddressMode = false;
+		newAddress = new Address();
+	}
+	// delete Address
+	private async Task DeleteAddress(int Id)
+	{
+		if (Id == 0)
+			return;
+		var result = await addressService.DeleteAddressAsync(Id);
+		if (result.Result)
+		{
+			if (addressService.DownloadedAddresses.Count > 0)
+				selectedAddressId = addressService.DownloadedAddresses[0].Id;
+			else
+				selectedAddressId = 0;
+		}
+		else
+		{
+			MessageWarning = result.Message?.ToString() ?? "Warnung Nachricht ist null gekommen";
+		}
+	}
+	// update address
+	private bool IsUpdateAddressMode { get; set; } = false;
+	private void OndblclickUpdateAddress(Address address)
+	{
+		IsUpdateAddressMode = true;
+		updateAddress = new Address()
+			{
+				Id = address.Id,
+				FirstName = address.FirstName,
+				LastName = address.LastName,
+				Phone = address.Phone,
+				Street = address.Street,
+				City = address.City,
+				ZipCode = address.ZipCode,
+				Country = address.Country,
+				UserId = address.UserId
+			};
+	}
+	private Address updateAddress = new();
+	private async Task UpdateAddress()
+	{
+		if (updateAddress.Id == 0)
+			return;
+		var result = await addressService.UpdateAddressAsync(updateAddress);
+		if (result.Result)
+		{
+			selectedAddressId = updateAddress.Id; // Set the selected address ID to the updated address
+			IsUpdateAddressMode = false; // Close the form after updating the address
+			updateAddress = new (); // Reset the updateAddress object
+		}
+		else
+		{
+			MessageWarning = result.Message?.ToString() ?? "Warnung Nachricht ist null gekommen";
+		}
+	}
+	// Payment
+	private MarkupString backToMainPageMessage;
+	private int selectedPaymentId = 1; // Default payment method
+	private async Task OnPaymentChanged(int newPaymentId)
+	{
+		// 5 ist die payment überweisung dass bedeuetet die versandkosten soll verlangt werden
+		if (newPaymentId == 5)
+		{
+			// get ShippingProvider if not loaded
+			if (orderService.DownloadedShippingProviders == null || orderService.DownloadedShippingProviders.Count == 0)
+				await orderService.GetShippingProvidersAsync();
+
+			// set default value
+			if (order.ShippingProviderId == null)
+			{
+				// 1 ist die Standard-ID des Versandanbieters
+				order.ShippingProviderId = 1; 
+				order.ShippingProviders = orderService.DownloadedShippingProviders?.FirstOrDefault(o => order.ShippingProviderId == order.ShippingProviderId) ?? null;
+				// add die versandkosten to cart 
+			}
+		}
+		else
+		{
+			// Versandanbieter zurücksetzen, wenn keine Versandzahlungsmethode verwendet wird
+			order.ShippingProviderId = null; 
+		}
+
+		selectedPaymentId = newPaymentId;
+		StateHasChanged();
+	}
+	private Order order = new Order();
+	private async Task OnPay()
+	{
+		// wenn der Kunde die AGB akzeptiert hat
+		if (!agbAkzeptiert)
+		{
+			MessageWarning = L["NotAcceptAgbMessage"].ToString();
+			return;
+		}
+
+		orderStatusEnum = CheckoutOrderEnum.Processing;
+		string backToMainPageAlertMessage = null!;
+		// check address
+		if ((selectedPaymentId == 2 || selectedPaymentId == 5) && selectedAddressId == 0)
+		{
+			MessageWarning = L["SelectDeliveryAddress"];
+			orderStatusEnum = CheckoutOrderEnum.Pending;
+			return;
+		}
+		// check payment method
+		if (selectedPaymentId == 0)
+		{
+			MessageWarning = L["SelectPaymentMethod"];
+			orderStatusEnum = CheckoutOrderEnum.Pending;
+			return;
+		}
+		// check MinimumPurchaseAmount
+		if (selectedPaymentId == 2) // wenn 2 Lieferung durch unsere Liefserivce
+		{
+			// if in unsere Lieferbereich
+			Address address = addressService.DownloadedAddresses.Find(a => a.Id == selectedAddressId) ?? null!;
+			if (address != null)
+			{
+				var result = await orderService.CheckIfWithinDeliveryRangeAsync(address.ZipCode!);
+				if (result.Item1.Result == false)
+				{
+					MessageWarning = $"{address.ZipCode} " + L[result.Item1.Message!].ToString();
+					orderStatusEnum = CheckoutOrderEnum.Pending;
+					return;
+				}
+				else if (result.Item1.Result == true)
+				{
+					var area = result.Item2;
+					if (cartService.GetTotalPrice() < area.MinimumPurchaseAmount)
+					{
+						MessageWarning = L["MinimumPurchaseAmountMessage"].ToString() + $" {area.MinimumPurchaseAmount}€";
+						orderStatusEnum = CheckoutOrderEnum.Pending;
+						return;
+					}
+				}
+				else
+				{
+					MessageWarning = "Unknown Error.";
+					orderStatusEnum = CheckoutOrderEnum.Pending;
+					return;
+				}
+				backToMainPageAlertMessage += $"<span style='color:#1E88E5; font-weight:bold;'>{L["OurDeliveryServiceWaringMessage"].ToString()}</span><br/>";
+			}
+			else
+			{
+				MessageWarning = L["ErrorAddressOurDelivery"];
+				orderStatusEnum = CheckoutOrderEnum.Pending;
+				return;
+			}
+		}
+		// check Age
+		/*var resultAge = await orderService.CheckAge(cartService.CartItems, user);
+		if (!resultAge.Result)
+			{
+			MessageWarning = L[resultAge.Message ?? ""];
+			orderStatusEnum = OrderStatusEnum.Pending;
+			return;
+		}*/
+		// check if shipping by post
+		var resultShipping = await orderService.CanShipByPostAsync(cartService.CartItems, selectedPaymentId, System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName);
+		if (!resultShipping.result)
+		{
+			MessageWarning = $"{resultShipping.productsName}, " + L[resultShipping.errorMessage].ToString();
+			orderStatusEnum = CheckoutOrderEnum.Pending;
+			return;
+		}
+		else
+		{
+			if (resultShipping.errorMessage != null)
+				backToMainPageAlertMessage += $"<span style='color:#FF4500; font-weight:bold;'>{L[resultShipping.errorMessage].ToString()}</span><br/>";
+		}
+
+		// check user 		
+		bool resultBool = false;
+		if (user.Id == 0)
+		{
+			user.Password = "gustPawword"; // set password to default value, because gust user not have password
+			var result = await authService.AddGuestAsync(user);
+			if (result.Result == false)
+			{
+				MessageWarning = L[result.Message?.ToString() ?? "Warnung Nachricht ist null gekommen"];
+				resultBool = false;
+			}
+			else
+			{
+				var getId = result!.Message?.Split(':').LastOrDefault();
+				// get user id from message to user object
+				if (int.TryParse(getId, out int userId))
+				{
+					user.Id = userId;
+
+					resultBool = await CreateOrder();
+				}
+				else
+				{
+					MessageWarning = "Ungültige Benutzer-ID erhalten.";
+					resultBool = false;
+					return;
+				}
+			}
+		}
+		else
+			resultBool = await CreateOrder();
+
+		if (resultBool)
+		{
+			MessageWarning = null!;
+
+			backToMainPageMessage = new MarkupString($"{L["ThankYouMessage"]}" +
+			"<br/>" +
+			backToMainPageAlertMessage);
+
+			orderStatusEnum = CheckoutOrderEnum.Commpleted;
+		}
+		else
+		{
+			orderStatusEnum = CheckoutOrderEnum.Pending;
+		}
+	}
+
+	private async Task<bool> CreateOrder()
+	{
+
+		Order createOrder = new Order()
+		{
+				DeliveryAddressId = selectedAddressId,
+				PaymentMethodId = selectedPaymentId,
+				StatusId = (int)OrderStatusEnum.Eingegangen, // in database 1 = Order Eingegangen
+				OrderItems = cartService.CartItems.Select(item => new OrderItems
+				{
+					ProductId = item.ProductId,
+					Quantity = item.Quantity,
+					UnitPrice = cartService.GetPriceOfProduct(item.ProductId),
+					CategoryId = item.Product?.CategoryId ?? 0
+				}).ToList(),
+				TotalPrice = order.TotalPrice,
+				OrderDate = DateTime.Now,
+				Notes = order.Notes,
+				UserId = user.Id,
+				DiscountCodeId = order.DiscountCodeId ?? null,
+				DiscountCategoryId = order.DiscountCategoryId ?? null,
+				ShippingProviderId = order.ShippingProviderId ?? null,
+				IsUserCreated = true 
+		};
+		var result = await orderService.AddOrderAsync(createOrder);
+		if (result.Result)
+		{
+			// clear cart
+			cartService.ClearCart();
+			StateHasChanged();
+			return true;
+		}
+		else
+		{
+			MessageWarning = result.Message?.ToString() ?? "Warnung Nachricht ist null gekommen";
+			return false;
+		}
+	}
+	// ti main page
+	private void OnMainPage()
+	{
+		navigationManager.NavigateTo("/", true);
+	}
+	// Discount Code and discount Category
+	private DiscountCodes discountCode = new();
+	private DiscountCategory discountCategory = new();
+	private bool IsDiscountCodeLoading = false;
+	private async Task OnCode()
+	{
+		if (user == null || user.Id == 0)
+		{
+			MessageWarning = L["LoginForDiscount"].ToString();
+			return;
+		}
+
+		IsDiscountCodeLoading = true;
+		var result = await discountService.CheckDiscountCodeAsync(discountCode.Code, user.Id);
+		if (result.validationResult.Result == true && result.discountCodes != null)
+		{
+			discountCode = result.discountCodes;
+			discountCode.Message = null!;
+			// discountcode category message empty if has content
+			discountCategory.Message = null!;
+		}
+		else
+		{
+			// if discount code not valid, try to discount code of Category
+			discountCategory.Code = discountCode.Code;
+			// reset discount code
+			discountCode = new();
+			// check discount category code
+			var result1 = await discountService.CheckDiscountCategoryAsync(discountCategory.Code.Trim(), user.Id);
+			if (result1.validationResult.Result == true && result1.discountCategory != null)
+			{
+				discountCategory = result1.discountCategory;
+
+				// check if the order has items in the category of the discount
+				bool hasCategoryItems = cartService.CartItems.Any(item => item.Product.CategoryId == discountCategory.CategoriesId);
+				if (hasCategoryItems)
+					discountCategory.Message = null!;
+				else
+					discountCategory.Message = L["NoItemsInCategory"];
+				// discountcode message empty if has content
+				discountCode.Message = null!;
+			}
+			else
+			{
+				discountCategory = new();
+				discountCategory.Message = result1.validationResult.Message!;
+			}
+		}
+		IsDiscountCodeLoading = false;
+	}
+	private (double discountValue, double finalPrice) GetFinalPriceWithDiscount()
+	{
+		if (discountCode == null || discountCode.Id == 0)
+		{
+			return (0, cartService.GetTotalPrice());
+		}
+		double discountValue = 0;
+		double totalPrice = cartService.GetTotalPrice();
+		if (discountCode.DiscountType == DiscountType.Percentage)
+			discountValue = (totalPrice * discountCode?.DiscountAmount / 100.0 ?? 0);
+		else
+			discountValue = discountCode?.DiscountAmount ?? 0;
+
+		discountValue = Math.Min(discountValue, totalPrice);
+
+		double finalPrice = totalPrice - discountValue;
+
+		order.DiscountCodeId = discountCode!.Id;
+		order.TotalPrice = finalPrice;
+
+		return (discountValue, finalPrice);
+	}
+	private (double discountValue, double finalPrice) GetFinalPriceWithDiscountCategory()
+	{
+		if (discountCategory == null || discountCategory.Id == 0)
+		{
+			return (0, cartService.GetTotalPrice());
+		}
+		// get total price of category items
+		double categoryitemsPrice = 0;
+		foreach (var item in cartService.CartItems)
+		{
+			if (item.Product.CategoryId == discountCategory.CategoriesId)
+			{
+				categoryitemsPrice += cartService.GetTotalPriceOfProduct(item.ProductId);
+			}
+		}
+
+		double categoryDiscountValue = 0;
+		double totalPrice = cartService.GetTotalPrice();
+		if (discountCategory.DiscountType == DiscountType.Percentage)
+			categoryDiscountValue = categoryitemsPrice * discountCategory.DiscountAmount / 100.0;
+		else
+			categoryDiscountValue = discountCategory.DiscountAmount;
+
+		
+		categoryDiscountValue = Math.Min(categoryDiscountValue, categoryitemsPrice);
+		// final price with discount of category
+		double finalPrice = totalPrice - categoryDiscountValue;
+
+		order.DiscountCategoryId = discountCategory.Id;
+		order.TotalPrice = finalPrice;
+
+		return (categoryDiscountValue, finalPrice);
+	}
+	private void GetFinalPrice()
+	{
+		order.TotalPrice = cartService.GetTotalPrice();
+	}
+	// user data update
+	private UpdateProfile updateProfile = new UpdateProfile();
+	private async Task OnUserUpdate()
+	{
+		updateProfile.UpdateType = UpdateTypeEnum.Birthday; // Assuming 3 is for birth date update
+		var result = await authService.UpdateProfileAsync(updateProfile);
+		if (!result.Result)
+		{
+			MessageWarning = result.Message?.ToString() ?? "Warnung Nachricht ist null gekommen";
+		}
+		else
+		{
+			user.BirthDate = updateProfile.BirthDate;
+			MessageWarning = result.Message?.ToString() ?? "Warnung Nachricht ist null gekommen";
+		}
+		updateProfile = new UpdateProfile();
+	}
+	private bool IsBirthDateValid(string birthDate)
+	{
+		bool result = DateTime.TryParse(birthDate, out _);
+		if (!result)
+		{
+			if (string.IsNullOrEmpty(updateProfile.BirthDate))
+				updateProfile.BirthDate = "2015-01-01"; // set default value if empty)
+			updateProfile.UserId = user.Id;
+			updateProfile.UpdateType = UpdateTypeEnum.Birthday; // set birthday mode, weil in profile page wird password model gesetzt
+		}
+		return result;
+	}
+	public void Dispose()
+	{
+
+	}
+}

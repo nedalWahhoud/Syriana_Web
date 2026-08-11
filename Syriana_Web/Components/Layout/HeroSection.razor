@@ -1,0 +1,22 @@
+﻿@inject IStringLocalizer<Syriana_Web.Components.Layout.HeroSection> L
+<div class="heroSection">
+    <h1 class="heroSectionH1">@L["HeroTitle"]</h1>
+    <img src="/ProjectImages/HeroSection.png" style="display:none;" @onload="OnImageLoaded" />
+</div>
+
+@code {
+
+    [Parameter] public EventCallback OnImageLoadedCallback { get; set; }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await js.InvokeVoidAsync("initScrollObserver", ".heroSectionH1");
+        }
+    }
+
+    private async Task OnImageLoaded()
+    {
+        await OnImageLoadedCallback.InvokeAsync();
+    }
+}

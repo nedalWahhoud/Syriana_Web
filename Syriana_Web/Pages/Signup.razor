@@ -1,0 +1,117 @@
+﻿@page "/signup"
+@using System.ComponentModel.DataAnnotations;
+@namespace Syriana_Web.Components.Layout
+@inject IStringLocalizer<Syriana_Web.Components.Layout.Signup> L
+
+<div class="mainDiv">
+    <div class="signupForm">
+        @if(signupModel.ValidationResult.Result == false)
+        {
+            if (signupModel.ValidationResult.Message != null)
+            {
+                <div class="alert alert-danger" role="alert">
+                    @L[signupModel.ValidationResult.Message]
+                </div>
+            }
+
+            <h2 @onclick="OnProjectInfo">@ProjectInfo.Name</h2>
+            <h3 class="title">@L["SignupText"]</h3>
+            <EditForm Model="@signupModel" OnValidSubmit="@HandleSubmit">
+                <DataAnnotationsValidator />
+                <div class="mt-3">
+                    <InputText id="userName" @bind-Value="signupModel.UserName" placeholder="@L["NamePlaceholder"]" class="form-control" />
+                    <ValidationMessage For="@(() => signupModel.UserName)" />
+                </div>
+                <div class="mt-3">
+                        <InputText id="email" @bind-Value="signupModel.Email" placeholder="@L["EmailPlaceholder"]" type="email" class="form-control" />
+                        
+                    <ValidationMessage For="@(() => signupModel.Email)" />
+                </div>
+                @*<div class="form-group mt-3">
+                    <label>@L["BirthDateLabel"]</label>
+                    <InputText id="birthDate" @bind-Value="signupModel.BirthDate" type="date" class="form-control" />
+                    <ValidationMessage For="@(() => signupModel.BirthDate)" />
+                </div>*@
+                <div class="mt-3">
+                    <div class="input-group">
+                        <InputText id="password" @bind-Value="signupModel.Password" placeholder="@L["PasswordPlaceholder"]" type="@signupModel.PasswordType" class="form-control" />
+                        <button type="button"  class="btn btn-outline-secondary" @onclick="TogglePassword">
+                            <i class="@signupModel.EyeIcon"></i>
+                        </button>
+                    </div>
+                    <ValidationMessage For="@(() => signupModel.Password)" />
+                </div>
+                <div class="mt-3">
+                    <InputText id="passwordAgain" @bind-Value="signupModel.PasswordAgain" placeholder="@L["PasswordAgainPlaceholder"]" type="password" class="form-control" />
+                    <ValidationMessage For="@(() => signupModel.PasswordAgain)" />
+                </div>
+                <button class="btn btn-primary" type="submit" disabled="@IsLoading">
+                    @if (IsLoading)
+                    {
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        <span class="ms-2">@L["Loading"]</span>
+                    }
+                    else
+                    {
+                        <span>@L["Register"]</span>
+                    }
+                </button>
+            </EditForm>
+            <div class ="loginLink">
+                @L["AlreadyRegisteredText"]
+                <a href="/login">@L["LoginText"]</a>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-success" role="alert">
+                @L[signupModel.ValidationResult.Message ?? "Okay"]
+            </div>
+            <button @onclick="Ok">@L["Okay"]</button>
+        }
+    </div>
+</div>
+
+@code {
+    private SignupModel signupModel = new();
+    private bool IsLoading = false;
+    private async Task HandleSubmit()
+    {
+        IsLoading = true;
+        signupModel.SignupProvider = "Manual"; // Set the signup provider to Manual
+        var result = await authService!.Signup(signupModel);
+        if (result.Result == true)
+        {
+            signupModel.ValidationResult = result;
+        }
+        else
+        {
+			signupModel.ValidationResult = result;
+            signupModel.PasswordAgain = string.Empty; // Clear the password confirmation field
+        }
+        IsLoading = false;
+    }
+  
+	private void Ok()
+	{
+        navigationManager.NavigateTo("/login", false);
+	}
+    private void OnProjectInfo()
+    {
+        navigationManager.NavigateTo("/", false);
+    }
+
+    private void TogglePassword()
+    {
+        if (signupModel.PasswordType == "password")
+        {
+            signupModel.PasswordType = "text";
+            signupModel.EyeIcon = "bi bi-eye-slash";
+        }
+        else
+        {
+            signupModel.PasswordType = "password";
+            signupModel.EyeIcon = "bi bi-eye";
+        }
+    }
+}

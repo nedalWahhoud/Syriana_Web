@@ -1,0 +1,2 @@
+C:\Users\nedal\source\repos\Syriana_Web\Syriana_Web\obj\Release\net8.0\browser-wasm\PubTmp\Out\web.config
+C:\Users\nedal\source\repos\Syriana_Web\Syriana_Web\obj\Release\net8.0\browser-wasm\PubTmp\Out\emcc-props.json

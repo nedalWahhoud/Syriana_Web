@@ -1,0 +1,36 @@
+﻿@page "/impressum"
+@namespace Syriana_Web.Components.Layout
+@inject IStringLocalizer<Syriana_Web.Components.Layout.Impressum> L
+<div class="mainDiv">
+	<h1>@L["impressum"]</h1>
+	<p>@(ProjectInfo.Name?.Replace(",", "\n") ?? "ProjectInfo ist null")</p>
+	<p style="white-space: pre-line;  line-height: 0.8;">
+		@(ProjectInfo.Address?.Replace(",", "\n") ?? "ProjectInfo ist null")
+	</p>
+	<h1>@L["Contact"]</h1>
+	<p>
+		@L["Tel"]:  
+		<span style="direction:ltr; unicode-bidi:isolate; display:inline-block;">
+			@(ProjectInfo.Whatsapp ?? "ProjectInfo ist null")
+		</span>
+	</p>
+	<p>@L["email"]: @(ProjectInfo.Email ?? "ProjectInfo ist null")</p>
+	<h1>@L["VATID"]</h1>
+	<p>@L["VATIDText"]</p>
+	<h1>@L["Hosting"]</h1>
+	<p>@L["HostingText"]</p>
+	<p>IONOS</p>
+	<h1>@L["developer"]</h1>
+	<p>
+		@(IsArabic ? DeveloperInfo.NameArabic : DeveloperInfo.Name)
+	</p>
+	@*<p>@L["Tel"] <span style="direction:ltr; unicode-bidi:isolate; display:inline-block;">@DeveloperInfo.Telefonnummer</span></p>*@
+	<p>@L["email"] @DeveloperInfo.Email</p>
+	<div class="logoDiv">
+		<Syriana_Web.Components.Layout.ProjektLogo />
+	</div>
+</div>
+
+@code {
+
+}

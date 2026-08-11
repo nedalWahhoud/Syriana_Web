@@ -1,0 +1,32 @@
+﻿@inherits ProjectComponentBase
+@if (product != null)
+{
+    <img @onclick="() => OnProduct(product.Id)" src="@productImagesService.GetProductImageUrl(product.ProductImages.FirstOrDefault(i => i.IsMain)!)" loading="lazy" alt="@product.Name_de" />
+    <div @onclick="() => OnProduct(product.Id)" class="textCard">
+        <a>
+            @(IsArabic ? product.Name_ar : product.Name_de)
+        </a>
+        <PriceLayout ProductId="ProductId" />
+
+    </div>
+}
+@code {
+    [Parameter]
+    public int ProductId { get; set; }
+
+    private Product product = null!;
+    protected override async Task OnParametersSetAsync()
+    {
+        int userId = (await authService.GetUser()).Id;
+        product = productService.GetProductByIdLocal(ProductId) ?? await productService.GetProductByIdAsync(ProductId,userId);
+    }
+
+    // On Product Click
+    private void OnProduct(int ProductId)
+    {
+        var productName = IsArabic ? product.Name_ar : product.Name_de;
+        var slug = GenerateSlug(productName!);
+
+        navigationManager.NavigateTo($"/ProductPage/{slug}/{product.Id}");
+    }
+}
