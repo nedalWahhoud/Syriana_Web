@@ -6,8 +6,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <PublishTrimmed>true</PublishTrimmed>
-     
-   
+
     <IsTransformWebConfigDisabled>true</IsTransformWebConfigDisabled>
 
   </PropertyGroup>
