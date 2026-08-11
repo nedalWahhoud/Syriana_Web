@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\build\Syriana_Web.props" />
-</Project>
