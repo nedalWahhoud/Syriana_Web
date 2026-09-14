@@ -12,6 +12,7 @@ namespace Syriana_Web.Components.Models
         public DateTime EndDate { get; set; } = DateTime.Now.AddDays(7);
         public int DisplayOrder { get; set; }
         public DateTime LastModified { get; set; }
+        public bool IsActive { get; set; }
 
     }
 }
