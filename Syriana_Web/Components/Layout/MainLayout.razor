@@ -91,12 +91,27 @@
     {
         if (firstRender)
         {
-            // Check for cookie consent
-            hasAccepted = await cookieService.HasAcceptedAsync();
-            // überprüfe ob Benutzer schon die Cookie Banner angabe gegeben hat
-            shouldShow = await cookieService.GetBannerSessionAsync();
-            //
-            StateHasChanged();
+            try
+            {
+                // Set the language and direction based on the current UI culture
+                var lang = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+                var dir = lang == "ar" ? "rtl" : "ltr";
+
+                // Aufruf einer JS-Funktion zum Anwenden von Richtung und Sprache
+                await js.InvokeVoidAsync("setAppDirection", lang, dir);
+
+
+                // Check for cookie consent
+                hasAccepted = await cookieService.HasAcceptedAsync();
+                // überprüfe ob Benutzer schon die Cookie Banner angabe gegeben hat
+                shouldShow = await cookieService.GetBannerSessionAsync();
+                //
+                StateHasChanged();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in OnAfterRenderAsyncMainLyout: {ex.Message}");
+            }
         }
     }
     private async Task Accept()

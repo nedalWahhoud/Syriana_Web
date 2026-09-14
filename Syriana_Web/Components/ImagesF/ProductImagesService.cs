@@ -3,9 +3,8 @@ using Syriana_Web.Components.Models;
 
 namespace Syriana_Web.Components.ImagesF
 {
-    public class ProductImagesService(IOptions<AppConfig> appConfig, IWebAssemblyHostEnvironment env)
+    public class ProductImagesService(IWebAssemblyHostEnvironment env)
     {
-        private readonly IOptions<AppConfig> _appConfig = appConfig;
         private readonly IWebAssemblyHostEnvironment _env = env;
 
         public string GetProductImageUrl(ProductImages productImages)

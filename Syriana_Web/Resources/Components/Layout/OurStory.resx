@@ -117,37 +117,43 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Agb" xml:space="preserve">
-    <value>شروط والأحكام العامة</value>
+  <data name="MainTitle" xml:space="preserve">
+    <value>Our Story</value>
   </data>
-  <data name="Contact" xml:space="preserve">
-    <value>للتواصل</value>
+  <data name="MainText" xml:space="preserve">
+    <value>Syriana Supermarket is more than just a grocery store. We aim to be a place where our customers feel welcome and can discover a wide selection of products from Syrian, Arab, and Middle Eastern cuisine.</value>
   </data>
-  <data name="FollowUs" xml:space="preserve">
-    <value>تابعنا على حسابتنا</value>
+  <data name="Idea" xml:space="preserve">
+    <value>Our Idea</value>
   </data>
-  <data name="Home" xml:space="preserve">
-    <value>الصفحة الرئيسية</value>
+  <data name="IdeaText" xml:space="preserve">
+    <value>Our story began in 2017 with a simple idea: Abulmoen Wahhoud initially founded a mobile business and started distributing Arabic flatbread.</value>
   </data>
-  <data name="Impressum" xml:space="preserve">
-    <value>بيانات النشر</value>
+  <data name="IdeaText1" xml:space="preserve">
+    <value>Over time, this initial idea grew into a larger business. We expanded our product range and began using our delivery vehicles to bring an ever-wider selection of Arabic and Oriental products to our customers.</value>
   </data>
-  <data name="Links" xml:space="preserve">
-    <value>روابط</value>
+  <data name="IdeaText2" xml:space="preserve">
+    <value>Our delivery area grew steadily. We supplied customers in Leutkirch, Wangen, Isny, Kißlegg, Bad Wurzach, Bad Waldsee, Aulendorf, Vogt, Ravensburg, Weingarten, Meckenbeuren, Tettnang, Lindau, Lindenberg, Weiler-Simmerberg, Scheidegg, and Kempten, as well as many smaller towns in the vicinity of these cities.</value>
   </data>
-  <data name="Location" xml:space="preserve">
-    <value>الموقع</value>
+  <data name="IdeaText3" xml:space="preserve">
+    <value>Thanks to personal contact with our customers and steadily growing demand, we have been able to expand our product range step by step. What began with Arabic flatbread evolved into an extensive selection of food products and specialties from Arab and Oriental cuisine.</value>
   </data>
-  <data name="OurDeliveryServiceInformation" xml:space="preserve">
-    <value>معلومات خدمة التوصيل لدينا</value>
+  <data name="IdeaText4" xml:space="preserve">
+    <value>In 2020, the time finally came: we opened our own supermarket at Wangener Straße 32, 88299 Leutkirch. This marked the beginning of a new chapter in our history.</value>
   </data>
-  <data name="OurStory" xml:space="preserve">
-    <value>قصتنا</value>
+  <data name="IdeaText5" xml:space="preserve">
+    <value>Since then, we have been working every day to offer our customers a wide selection of Arabic and Oriental products, high quality, and friendly, personal service.</value>
   </data>
-  <data name="PrivacyPolicy" xml:space="preserve">
-    <value>سياسة الخصوية</value>
+  <data name="IdeaText6" xml:space="preserve">
+    <value>What began as a small idea in 2017 has since grown into a supermarket that connects customers in Leutkirch—as well as in many surrounding towns and cities—with products from Arab and Middle Eastern cuisine.</value>
   </data>
-  <data name="RightOfWithdrawal" xml:space="preserve">
-    <value>حق الارجاع</value>
+  <data name="OurCustomers" xml:space="preserve">
+    <value>Our Customers</value>
+  </data>
+  <data name="CustomersText" xml:space="preserve">
+    <value>Today, we welcome around 600 customers each month and supply them with our products. This large number demonstrates just how important our offerings have become for the people of Leutkirch and the surrounding region.</value>
+  </data>
+  <data name="CustomersText1" xml:space="preserve">
+    <value>The trust our customers place in us is something special. Many of our customers have been with us since our early years and are an important part of our history. We are deeply grateful for this and view it as our mission to earn that trust anew every day.</value>
   </data>
 </root>

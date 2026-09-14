@@ -117,37 +117,43 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Agb" xml:space="preserve">
-    <value>شروط والأحكام العامة</value>
-  </data>
-  <data name="Contact" xml:space="preserve">
-    <value>للتواصل</value>
-  </data>
-  <data name="FollowUs" xml:space="preserve">
-    <value>تابعنا على حسابتنا</value>
-  </data>
-  <data name="Home" xml:space="preserve">
-    <value>الصفحة الرئيسية</value>
-  </data>
-  <data name="Impressum" xml:space="preserve">
-    <value>بيانات النشر</value>
-  </data>
-  <data name="Links" xml:space="preserve">
-    <value>روابط</value>
-  </data>
-  <data name="Location" xml:space="preserve">
-    <value>الموقع</value>
-  </data>
-  <data name="OurDeliveryServiceInformation" xml:space="preserve">
-    <value>معلومات خدمة التوصيل لدينا</value>
-  </data>
-  <data name="OurStory" xml:space="preserve">
+  <data name="MainTitle" xml:space="preserve">
     <value>قصتنا</value>
   </data>
-  <data name="PrivacyPolicy" xml:space="preserve">
-    <value>سياسة الخصوية</value>
+  <data name="MainText" xml:space="preserve">
+    <value>سوبر ماركت سيريانا ليس مجرد متجر بقالة. نريد أن نكون مكاناً يشعر فيه عملاؤنا بالترحيب ويمكنهم فيه اكتشاف مجموعة واسعة من المنتجات من المطبخ السوري والعربي والشرقي.</value>
   </data>
-  <data name="RightOfWithdrawal" xml:space="preserve">
-    <value>حق الارجاع</value>
+  <data name="Idea" xml:space="preserve">
+    <value>فكرتنا</value>
+  </data>
+  <data name="IdeaText" xml:space="preserve">
+    <value>بدأت قصتنا في عام 2017 بفكرة بسيطة: أسس عبد المعين وحود في البداية شركة صغير لتوزيع على سيارة وبدأ في توزيع الخبز العربي باستخدام مركبة توصيل صغيرة.</value>
+  </data>
+  <data name="IdeaText1" xml:space="preserve">
+    <value>بمرور الوقت، تطورت هذه الفكرة الأولية إلى شركة أكبر. قمنا بتوسيع نطاق منتجاتنا وبدأنا بتوصيل تشكيلة متزايدة باستمرار من المنتجات العربية والشرقية لعملائنا باستخدام مركبات التوصيل الخاصة بنا.</value>
+  </data>
+  <data name="IdeaText2" xml:space="preserve">
+    <value>نمت مناطق التوزيع لدينا بشكل سريع. قمنا بتزويد العملاء في Leutkirch، وWangen، وIsny، وKißlegg، وBad Wurzach، وBad Waldsee، وAulendorf، وVogt، وRavensburg، وWeingarten، وMeckenbeuren، وTettnang، وLindau، وLindenberg، وWeiler-Simmerberg، وScheidegg، وKempten، بالإضافة إلى العديد من البلدات والقرى الصغيرة في   المناطق المحيطة لهذه المدن.</value>
+  </data>
+  <data name="IdeaText3" xml:space="preserve">
+    <value>بفضل التواصل المباشر مع عملائنا والطلب المتزايد باستمرار، تمكّنا من توسيع نطاق منتجاتنا تدريجياً. فما بدأ بالخبز العربي المسطح تطوّر ليصبح تشكيلة واسعة من المنتجات الغذائية والأطباق المميزة من المطبخ العربي والشرق أوسطي.</value>
+  </data>
+  <data name="IdeaText4" xml:space="preserve">
+    <value>في عام 2020، حان الوقت أخيرًا: افتتحنا متجرنا الخاص في شارع Wangenerstraße 32 88299 Leutkirch. كان هذا بمثابة بداية فصل جديد في قصتنا.</value>
+  </data>
+  <data name="IdeaText5" xml:space="preserve">
+    <value>منذ ذلك الحين، ونحن نعمل كل يوم لنقدم لعملائنا مجموعة واسعة من المنتجات العربية والشرقية، بجودة عالية وخدمة شخصية ودودة.</value>
+  </data>
+  <data name="IdeaText6" xml:space="preserve">
+    <value>ما بدأ كفكرة صغيرة في عام 2017 أصبح الآن سوبر ماركت يربط عملائه في لويتكيرش والعديد من المدن والمناطق المحيطة بها بمنتجات المطبخ العربي والشرق أوسطي.</value>
+  </data>
+  <data name="OurCustomers" xml:space="preserve">
+    <value>عملاؤنا</value>
+  </data>
+  <data name="CustomersText" xml:space="preserve">
+    <value>يسرنا اليوم أن نرحب ونزود حوالي 600 عميل شهرياً. هذا العدد الكبير يدل على مدى أهمية خدماتنا لسكان لويتكيرش والمنطقة المحيطة بها.</value>
+  </data>
+  <data name="CustomersText1" xml:space="preserve">
+    <value>إن ثقة عملائنا تُمثل قيمةً عظيمةً لدينا. لقد كان العديد منهم معنا منذ البداية، وهم جزءٌ لا يتجزأ من مسيرتنا. نحن ممتنون للغاية لهذه الثقة، ونعتبرها مسؤوليتنا أن نكسبها من جديد كل يوم.</value>
   </data>
 </root>

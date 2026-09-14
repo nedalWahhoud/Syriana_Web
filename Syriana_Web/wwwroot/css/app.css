@@ -41,8 +41,6 @@ html, body {
     border-radius: 18px;
     margin-bottom: 20px;
 }
-
-
 .productsCard {
     flex: 0 0 auto;
     width: 280px;
@@ -142,8 +140,11 @@ html, body {
     border: 1px solid #ccc;
     text-align: center;
 }
-
-
+/* Logo in Pages */
+.logoDiv {
+    display: flex;
+    justify-content: center;
+}
 
 @media (max-width: 768px) {
     /* product card */

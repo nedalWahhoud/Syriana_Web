@@ -141,6 +141,9 @@
   <data name="OurDeliveryServiceInformation" xml:space="preserve">
     <value>Our delivery service information</value>
   </data>
+  <data name="OurStory" xml:space="preserve">
+    <value>Our Story</value>
+  </data>
   <data name="PrivacyPolicy" xml:space="preserve">
     <value>Privacy Policy</value>
   </data>

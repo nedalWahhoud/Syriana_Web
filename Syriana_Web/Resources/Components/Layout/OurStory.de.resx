@@ -117,37 +117,43 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Agb" xml:space="preserve">
-    <value>شروط والأحكام العامة</value>
+  <data name="MainTitle" xml:space="preserve">
+    <value>Unsere Geschichte</value>
   </data>
-  <data name="Contact" xml:space="preserve">
-    <value>للتواصل</value>
+  <data name="MainText" xml:space="preserve">
+    <value>Syriana Supermarkt ist mehr als nur ein Lebensmittelgeschäft. Wir möchten ein Ort sein, an dem sich unsere Kundinnen und Kunden willkommen fühlen und eine große Auswahl an Produkten aus der syrischen, arabischen und orientalischen Küche entdecken können.</value>
   </data>
-  <data name="FollowUs" xml:space="preserve">
-    <value>تابعنا على حسابتنا</value>
+  <data name="Idea" xml:space="preserve">
+    <value>Unsere Idee</value>
   </data>
-  <data name="Home" xml:space="preserve">
-    <value>الصفحة الرئيسية</value>
+  <data name="IdeaText" xml:space="preserve">
+    <value>Unsere Geschichte begann im Jahr 2017 mit einer einfachen Idee: Abulmoen Wahhoud gründete zunächst ein Reisegewerbe und begann mit dem Vertrieb durch klein Lieferfahrzeug von arabischem Fladenbrot.</value>
   </data>
-  <data name="Impressum" xml:space="preserve">
-    <value>بيانات النشر</value>
+  <data name="IdeaText1" xml:space="preserve">
+    <value>Mit der Zeit entwickelte sich aus dieser ersten Idee ein größeres Unternehmen. Wir erweiterten unser Angebot und begannen, mit unseren Lieferfahrzeug eine immer größere Auswahl an arabischen und orientalischen Produkten zu unseren Kunden zu bringen.</value>
   </data>
-  <data name="Links" xml:space="preserve">
-    <value>روابط</value>
+  <data name="IdeaText2" xml:space="preserve">
+    <value>Unser Liefergebiet wuchs stetig. Wir belieferten Kunden in Leutkirch, Wangen, Isny, Kißlegg, Bad Wurzach, Bad Waldsee, Aulendorf, Vogt, Ravensburg, Weingarten, Meckenbeuren, Tettnang, Lindau, Lindenberg, Weiler-Simmerberg, Scheidegg und Kempten sowie viele kleinere Orte in der Umgebung dieser Städte.</value>
   </data>
-  <data name="Location" xml:space="preserve">
-    <value>الموقع</value>
+  <data name="IdeaText3" xml:space="preserve">
+    <value>Durch den persönlichen Kontakt zu unseren Kunden und die stetig wachsende Nachfrage konnten wir unser Sortiment Schritt für Schritt erweitern. Was mit arabischem Fladenbrot begann, entwickelte sich zu einem umfangreichen Angebot an Lebensmitteln und Spezialitäten aus der arabischen und orientalischen Küche.</value>
   </data>
-  <data name="OurDeliveryServiceInformation" xml:space="preserve">
-    <value>معلومات خدمة التوصيل لدينا</value>
+  <data name="IdeaText4" xml:space="preserve">
+    <value>Im Jahr 2020 war es schließlich soweit: Wir eröffneten unseren eigenen Supermarkt in der Wangener Straße 32, 88299 Leutkirch. Damit begann ein neues Kapitel unserer Geschichte.</value>
   </data>
-  <data name="OurStory" xml:space="preserve">
-    <value>قصتنا</value>
+  <data name="IdeaText5" xml:space="preserve">
+    <value>Seitdem arbeiten wir jeden Tag daran, unseren Kunden eine große Auswahl an arabischen und orientalischen Produkten, gute Qualität und einen freundlichen persönlichen Service anzubieten.</value>
   </data>
-  <data name="PrivacyPolicy" xml:space="preserve">
-    <value>سياسة الخصوية</value>
+  <data name="IdeaText6" xml:space="preserve">
+    <value>Was 2017 als kleine Idee begann, ist mittlerweile zu einem Supermarkt geworden, der seine Kunden in Leutkirch und viele Städe und Umgebung mit Produkten der arabischen und nahöstlichen Küche verbindet.</value>
   </data>
-  <data name="RightOfWithdrawal" xml:space="preserve">
-    <value>حق الارجاع</value>
+  <data name="OurCustomers" xml:space="preserve">
+    <value>Unsere Kunden</value>
+  </data>
+  <data name="CustomersText" xml:space="preserve">
+    <value>Heute dürfen wir jeden Monat rund 600 Kunden bei uns begrüßen und mit unseren Produkten versorgen. Diese große Zahl zeigt uns, wie wichtig unser Angebot für die Menschen in Leutkirch und der umliegenden Region geworden ist.</value>
+  </data>
+  <data name="CustomersText1" xml:space="preserve">
+    <value>Das Vertrauen unserer Kunden ist für uns etwas Besonderes. Viele unserer Kunden begleiten uns bereits seit den ersten Jahren und sind ein wichtiger Teil unserer Geschichte. Dafür sind wir sehr dankbar und sehen es als unsere Aufgabe, dieses Vertrauen jeden Tag aufs Neue zu verdienen.</value>
   </data>
 </root>
