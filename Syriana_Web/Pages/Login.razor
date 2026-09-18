@@ -93,7 +93,7 @@
     {
         isGoogleLoading = true;
 
-        navigationManager.NavigateTo($"{AppConfig.GoogleApiUrl}?rememberMe={loginModel.RememberMe}", true);
+        navigationManager.NavigateTo($"{AppConfig.GoogleApiUrl}?rememberMe={loginModel.RememberMe}&loginSource={loginModel.loginSource}", true);
 
         isGoogleLoading = false;
     }

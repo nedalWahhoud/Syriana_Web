@@ -19,7 +19,8 @@ namespace Syriana_Web.Components.Models
         public string SignupProvider { get; set; } = string.Empty;
         [JsonIgnore]
         public bool RememberMe { get; set; } = false;
-    
+        [JsonIgnore]
+        public char loginSource { get; set; } = 'w';
         public string Token { get; set; } = string.Empty;
         public string EyeIcon = "bi bi-eye";
         public string PasswordType = "password";
