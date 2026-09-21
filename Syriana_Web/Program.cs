@@ -4,7 +4,6 @@ using Microsoft.JSInterop;
 using Syriana_Web;
 using Syriana_Web.Components.AddressesF;
 using Syriana_Web.Components.Cart;
-using Syriana_Web.Components.CategoriesF;
 using Syriana_Web.Components.CookieF;
 using Syriana_Web.Components.CustomersF;
 using Syriana_Web.Components.DebtF;
@@ -15,7 +14,6 @@ using Syriana_Web.Components.ImagesF;
 using Syriana_Web.Components.Login;
 using Syriana_Web.Components.OrderF;
 using Syriana_Web.Components.ProductGroupF;
-using Syriana_Web.Components.ProductsF;
 using Syriana_Web.Components.SearchF;
 using Syriana_Web.Components.TransactionsCustomersF;
 
